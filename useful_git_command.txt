@@ -1,11 +1,15 @@
 #Use only for first time
 git clone https://github.com/OneJackLee/APARAPI-acceleration
 
+#set global account, only for first time
+git config --global user.email "your github email"
+git config --global user.name "your name"
+
 #Before adding/changing code
 git pull
 
 #Once changes made, want to add to git folder
 git add *
-git commit -m "commit message"
 git status
+git commit -m "commit message"
 git push origin master
