@@ -21,3 +21,31 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# Useful examples
+# https://github.com/github/gitignore
+
+# OS X
+*.DS_Store
+
+# C/C++
+*.so
+*.dylib
+*.dSYM
+*.dll
+*.jnilib
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Directories
+**/bin/
+**/classes/
+**/dist/
+**/include/
+**/nbproject/
+target/
+
+# IntelliJ config files
+.idea
+*.iml
