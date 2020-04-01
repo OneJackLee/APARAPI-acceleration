@@ -7,6 +7,7 @@ public class First {
         System.out.println("testing");
 // simple comment
         // new comment
+        // new comment
         Random rand = new Random();
 
         int greatest = 100000;
