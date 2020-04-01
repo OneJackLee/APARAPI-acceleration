@@ -5,9 +5,6 @@ import java.util.Random;
 public class First {
     public static void main(String[] _args){
         System.out.println("testing");
-// simple comment
-        // new comment
-        // new comment
         Random rand = new Random();
 
         int greatest = 100000;
