@@ -21,14 +21,9 @@ public class ReadFile {
             String str = tokenizer.nextToken().trim().toLowerCase();
             System.out.println(str);
             if (str.equals("ncols")){
-
+                System.out.println(Integer.parseInt(tokenizer.nextToken()));
             }
-
         }
-
-//        StringTokenizer tokenizer = new StringTokenizer()
-
-
         return "";
     }
 }
