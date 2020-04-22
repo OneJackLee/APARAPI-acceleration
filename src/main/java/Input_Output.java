@@ -29,8 +29,28 @@ public class Input_Output {
         return fc.getSelectedFile();
     }
 
+    public static void output_file(){
+        JFrame parentFrame = new JFrame();
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Specify a file to save");
+
+        int userSelection = fileChooser.showSaveDialog(parentFrame);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+        }
+
+//        https://www.codejava.net/java-se/swing/show-save-file-dialog-using-jfilechooser
+//        need more understanding
+    }
+
+
 //    https://www.youtube.com/watch?v=9VrtranTJnc
 //    https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
+
+
 
 
 
