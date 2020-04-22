@@ -1,23 +1,22 @@
 import javax.swing.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 // ask user to input file name or use JFileChooser (take from Oracle)
 public class Input_Output {
 
-//    public void inputFile(){
-//        Scanner readInput = new Scanner (System.in); // creates readInput scanner
-//        System.out.println("Enter file name");
-//
-//        String fileName = readInput.nextLine(); // reads next line aka the user input
-//
-//        File inputFile = new File (fileName); // opens fileName, aka file has to be in the same folder.
-//
-//        //additional comment for commit comment
-//
-//    }
+    public static void main(String[] args) throws FileNotFoundException {
 
-    public static void main(String[] args){
+        File inputFile =  input_file(); // opens file in that directory
+
+        // read file // maybe in another class/method
+        Scanner readFile = new Scanner(inputFile);
+//        readFile.
+
+    }
+
+    public static File input_file(){
         JButton open = new JButton();
         JFileChooser fc = new JFileChooser();
         fc.setCurrentDirectory(new java.io.File("C:"));
@@ -26,10 +25,12 @@ public class Input_Output {
         if (fc.showOpenDialog(open)==JFileChooser.APPROVE_OPTION){
             //
         }
-        System.out.println("Tis"+fc.getSelectedFile().getAbsolutePath());
+
+        return fc.getSelectedFile();
     }
 
 //    https://www.youtube.com/watch?v=9VrtranTJnc
+//    https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
 
 
 
