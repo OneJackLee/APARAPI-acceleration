@@ -1,13 +1,14 @@
 package edu.monash.fit.aparapi_filter;
 
+import com.aparapi.Kernel;
+import com.aparapi.Range;
+
+import java.util.Random;
+
 public class Grid {
-    private final float[] bufferReceived;
+    private float[] bufferReceived;
     private int cols, rows;
     private double cellSize, north, south;
-
-//    private final static float slopeThreshold = (float) Math.tan(Math.toRadians(6f));
-//    private final static float sigmaBlur = 6f, relativeGain = 0.5f, sigmaSmooth = 20f;
-
 
     public Grid(float[] bufferReceived, int cols, int rows, double cellSize, double north, double south){
         this.bufferReceived = bufferReceived;
@@ -16,6 +17,59 @@ public class Grid {
         this.cellSize = cellSize;
         this.north = north;
         this.south = south;
+    }
+
+    public Grid(int cols, int rows, double cellSize, double north, double south){
+        this.cols = cols;
+        this.rows = rows;
+        this.cellSize = cellSize;
+        this.north = north;
+        this.south = south;
+        this.bufferReceived = new float[this.cols * this.rows];
+        fillBuffer();
+    }
+
+    private void fillBuffer(){
+        bufferReceived[0] = 0;
+        Kernel fillBuffer = new Kernel() {
+            @Override
+            public void run() {
+                int i = getGlobalId();
+                bufferReceived[i] = bufferReceived[0];
+            }
+        };
+        fillBuffer.execute(Range.create(bufferReceived.length));
+        fillBuffer.dispose();
+//
+//        Random rand = new Random();
+//
+//        int greatest = 100000000;
+//
+//        final float[] inA = new float[greatest];
+//        final float[] inB = new float[greatest];
+//        final float[] result = new float[greatest];
+//
+//        for(int i = 0; i < inA.length; i++){
+//            inA[i] = rand.nextFloat();
+//            inB[i] = rand.nextFloat();
+//        }
+//
+//        Kernel kernel = new Kernel(){
+//            public void run() {
+//                int i = getGlobalId();
+////                result[i] = inA[i] + inB[i];
+//                result[i] = (float)(Math.cos(Math.sin(inA[i])) + Math.sin(Math.cos(inB[i])));
+//
+//            }
+//        };
+//
+////        Range range = Range.create(result.length);
+//        long startTime = System.currentTimeMillis();
+//        kernel.execute(Range.create(result.length));
+//        long endTime = System.currentTimeMillis();
+//        kernel.dispose();
+
+
     }
 
     public float[] getBuffer(){
@@ -38,6 +92,22 @@ public class Grid {
         this.rows = rows;
     }
 
+    public int getCols() {
+        return cols;
+    }
+
+    public void setCols(int cols) {
+        this.cols = cols;
+    }
+
+    public double getCellSize() {
+        return cellSize;
+    }
+
+    public void setCellSize(double cellSize) {
+        this.cellSize = cellSize;
+    }
+
     public double getSouth() {
         return south;
     }
@@ -54,19 +124,42 @@ public class Grid {
         this.north = north;
     }
 
-    public int getCols() {
-        return cols;
-    }
-
-    public void setCols(int cols) {
-        this.cols = cols;
-    }
-
-    public double getCellSize() {
+    public double getProjectedCellSize(int row) {
+        // TODO replace with a better test to detect geographic coordinate systems that also uses the extent of the grid
+        if (cellSize < 0.1) {
+            double latRad = Math.toRadians(getNorth() - row * cellSize);
+            double latitudeCorrectedCellSizeRad = Math.cos(latRad) * Math.toRadians(cellSize);
+            return latitudeCorrectedCellSizeRad * 6_371_007; // radius of authalic sphere for GRS 1980
+        }
         return cellSize;
     }
 
-    public void setCellSize(double cellSize) {
-        this.cellSize = cellSize;
+    public float get8NeighborGradient(int col, int row) {
+        final float projectedCellSize = (float) getProjectedCellSize(row);
+        final float cellSizeTimes8 = 8 * projectedCellSize;
+
+        final int cols = getCols();
+        final int rows = getRows();
+
+        final int colLeft = col > 0 ? col - 1 : 0;
+        final int colRight = col < cols - 1 ? col + 1 : cols - 1;
+        final int rowTop = row > 0 ? row - 1 : 0;
+        final int rowBottom = row < rows - 1 ? row + 1 : rows - 1;
+
+        final float a = get(colLeft, rowTop);
+        final float b = get(col, rowTop);
+        final float c = get(colRight, rowTop);
+        final float d = get(colLeft, row);
+
+        final float f = get(colRight, row);
+        final float g = get(colLeft, rowBottom);
+        final float h = get(col, rowBottom);
+        final float i = get(colRight, rowBottom);
+
+        final float dZdX = ((c + (2 * f) + i) - (a + (2 * d) + g)) / cellSizeTimes8;
+        final float dZdY = ((g + (2 * h) + i) - (a + (2 * b) + c)) / cellSizeTimes8;
+        return (float) Math.sqrt((dZdX * dZdX) + (dZdY * dZdY));
     }
+
+
 }
