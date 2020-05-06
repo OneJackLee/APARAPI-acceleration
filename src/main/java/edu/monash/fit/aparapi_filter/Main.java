@@ -5,6 +5,7 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) {
+
         if (args.length < 2) {
             System.out.println("END");
             System.exit(-1);
@@ -15,6 +16,7 @@ public class Main {
         int n = cols * rows;
 
         float[] buffer = new float[n];
+        MaskFilter mf;
 
         try {
             for (int i = 0; i < n; i++) {
@@ -31,9 +33,13 @@ public class Main {
                 // Note: other languages likely use little-endian order, wich would
                 // require shuffling the bytes
                 int intBits = b4 << 24 | (b3 & 0xFF) << 16 | (b2 & 0xFF) << 8 | (b1 & 0xFF);
-                float f = Float.intBitsToFloat(intBits);
+//                float f = Float.intBitsToFloat(intBits);
                 buffer[i] = Float.intBitsToFloat(intBits);
             }
+
+            mf = new MaskFilter(buffer, cols, rows);
+            buffer = mf.result();
+
 
             for (int i = 0; i < n; i++) {
                 int intBits = Float.floatToIntBits(buffer[i]);
