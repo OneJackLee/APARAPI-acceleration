@@ -1,5 +1,6 @@
 package edu.monash.fit.aparapi_filter;
 
+import com.aparapi.*;
 import java.io.IOException;
 public class Main {
 
@@ -42,8 +43,8 @@ public class Main {
             }
 
             source = new Grid(buffer, cols, rows, cellsize, north, south);
-//            output = new Grid(cols, rows, cellsize, north, south);
-            buffer = source.getBuffer();
+////            output = new Grid(cols, rows, cellsize, north, south);
+//            buffer = source.getBuffer();
 
 
             for (int i = 0; i < n; i++) {
