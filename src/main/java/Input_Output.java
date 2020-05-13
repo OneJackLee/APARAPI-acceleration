@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.Scanner;
 
 // ask user to input file name or use JFileChooser (take from Oracle)
@@ -26,6 +27,8 @@ public class Input_Output {
             //
         }
 
+
+
         return fc.getSelectedFile();
     }
 
@@ -46,16 +49,7 @@ public class Input_Output {
 //        need more understanding
     }
 
-
 //    https://www.youtube.com/watch?v=9VrtranTJnc
 //    https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
-
-
-
-
-
-
-
-
 
 }

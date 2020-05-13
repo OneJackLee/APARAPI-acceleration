@@ -42,7 +42,7 @@ public class Main {
                 buffer[i] = Float.intBitsToFloat(intBits);
             }
 
-            source = new Grid(buffer, cols, rows, cellsize, north, south);
+           // source = new Grid(buffer, cols, rows, cellsize, north, south);
 ////            output = new Grid(cols, rows, cellsize, north, south);
 //            buffer = source.getBuffer();
 
