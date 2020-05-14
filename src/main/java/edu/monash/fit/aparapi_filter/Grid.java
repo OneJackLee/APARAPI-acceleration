@@ -24,82 +24,7 @@ public class Grid {
         this.north = north;
         this.south = south;
         this.bufferReceived = new float[this.cols * this.rows];
-//        fillBuffer();
     }
-
-    private void fillBuffer() {
-        Random rand = new Random();
-
-        int greatest = 100000000;
-
-        final float[] inA = new float[greatest];
-        final float[] inB = new float[greatest];
-        final float[] result = new float[greatest];
-
-        for(int i = 0; i < inA.length; i++){
-            inA[i] = rand.nextFloat();
-            inB[i] = rand.nextFloat();
-        }
-
-        Kernel kernel = new Kernel(){
-            public void run() {
-                int i = getGlobalId();
-//                result[i] = inA[i] + inB[i];
-                result[i] = (float)(Math.cos(Math.sin(inA[i])) + Math.sin(Math.cos(inB[i])));
-
-            }
-        };
-
-//        Range range = Range.create(result.length);
-        long startTime = System.currentTimeMillis();
-        kernel.execute(Range.create(result.length));
-        long endTime = System.currentTimeMillis();
-        kernel.dispose();
-
-
-    }
-
-//        bufferReceived[0] = 0;
-//        Kernel fillBuffer = new Kernel() {
-//            @Override
-//            public void run() {
-//                int i = getGlobalId();
-//                bufferReceived[i] = bufferReceived[0];
-//            }
-//        };
-//        fillBuffer.execute(Range.create(bufferReceived.length));
-//        fillBuffer.dispose();
-//
-////        Random rand = new Random();
-////
-////        int greatest = 100000000;
-////
-////        final float[] inA = new float[greatest];
-////        final float[] inB = new float[greatest];
-////        final float[] result = new float[greatest];
-////
-////        for(int i = 0; i < inA.length; i++){
-////            inA[i] = rand.nextFloat();
-////            inB[i] = rand.nextFloat();
-////        }
-////
-////        Kernel kernel = new Kernel(){
-////            public void run() {
-////                int i = getGlobalId();
-//////                result[i] = inA[i] + inB[i];
-////                result[i] = (float)(Math.cos(Math.sin(inA[i])) + Math.sin(Math.cos(inB[i])));
-////
-////            }
-////        };
-////
-//////        Range range = Range.create(result.length);
-////        long startTime = System.currentTimeMillis();
-////        kernel.execute(Range.create(result.length));
-////        long endTime = System.currentTimeMillis();
-////        kernel.dispose();
-//
-//
-//    }
 
     public float[] getBuffer(){
         return bufferReceived;
@@ -121,11 +46,11 @@ public class Grid {
         bufferReceived[directIndex] = value;
     }
 
-    public int getRow(int directIndex){
+    public int getCol(int directIndex){
         return directIndex / getRows();
     }
 
-    public int getCol(int directIndex){
+    public int getRow(int directIndex){
         return directIndex % getRows();
     }
 
