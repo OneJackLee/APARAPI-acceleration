@@ -113,6 +113,26 @@ public class Grid {
         bufferReceived[col + row * cols] = value;
     }
 
+    public float get(int directIndex){
+        return bufferReceived[directIndex];
+    }
+
+    public void set(float value, int directIndex){
+        bufferReceived[directIndex] = value;
+    }
+
+    public int getRow(int directIndex){
+        return directIndex / getRows();
+    }
+
+    public int getCol(int directIndex){
+        return directIndex % getRows();
+    }
+
+    public int getDirectIndex(int col, int row){
+        return col + row * cols;
+    }
+
     public int getRows() {
         return rows;
     }
