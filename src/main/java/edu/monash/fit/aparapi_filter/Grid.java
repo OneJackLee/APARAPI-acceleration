@@ -46,12 +46,12 @@ public class Grid {
         bufferReceived[directIndex] = value;
     }
 
-    public int getCol(int directIndex){
-        return directIndex / getRows();
+    public int getRow(int directIndex){
+        return directIndex / getCols();
     }
 
-    public int getRow(int directIndex){
-        return directIndex % getRows();
+    public int getCol(int directIndex){
+        return directIndex % getCols();
     }
 
     public int getDirectIndex(int col, int row){
