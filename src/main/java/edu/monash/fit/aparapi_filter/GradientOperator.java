@@ -4,8 +4,14 @@ import com.aparapi.Kernel;
 
 public class GradientOperator implements AparapiOperator {
     @Override
-    public Grid operate(Grid src, Grid dest) {
-        return null;
+    public void operate(Grid src, Grid dest) {
+        Kernel kernel = new Kernel(){
+            @Override
+            public void run() {
+
+            }
+        };
+
     }
 
     @Override
