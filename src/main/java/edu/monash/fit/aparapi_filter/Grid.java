@@ -26,6 +26,23 @@ public class Grid {
         this.bufferReceived = new float[this.cols * this.rows];
     }
 
+    public void fillWithRandomFloat(){
+        Random random = new Random();
+        float max = 4000;
+        float min = 1000;
+        for(int i = 0; i <(  getCols() * getRows()); i++){
+            this.set(random.nextFloat() * (max - min) + min, i);
+        }
+    }
+
+    public void fillWithZero(){
+        Random random = new Random();
+        for(int i = 0; i <(  getCols() * getRows()); i++){
+            this.set(0f, i);
+        }
+    }
+
+
     public float[] getBuffer(){
         return bufferReceived;
     }
