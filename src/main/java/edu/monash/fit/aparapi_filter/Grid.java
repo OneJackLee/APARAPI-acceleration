@@ -42,6 +42,9 @@ public class Grid {
         }
     }
 
+    public void setBufferReceived(float[] bufferReceived){
+        this.bufferReceived = bufferReceived;
+    }
 
     public float[] getBuffer(){
         return bufferReceived;
