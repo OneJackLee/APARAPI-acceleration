@@ -42,6 +42,10 @@ public class Grid {
         }
     }
 
+    public int getLength(){
+        return getCols() * getRows();
+    }
+
     public void setBufferReceived(float[] bufferReceived){
         this.bufferReceived = bufferReceived;
     }

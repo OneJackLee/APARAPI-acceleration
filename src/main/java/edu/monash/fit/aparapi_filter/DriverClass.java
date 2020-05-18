@@ -13,7 +13,7 @@ public class DriverClass {
         for (float i: input.getBuffer())
             System.out.println(i);
 
-        new GradientOperator().operate(input, output);
+        new MaskFilter(input, output).execute();
 
         System.out.println("");
 

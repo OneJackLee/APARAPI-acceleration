@@ -7,8 +7,6 @@ public class Main {
     public static void main(String[] args) {
 
         if (args.length < 5) {
-            Grid output = new Grid(3, 4, 0.5, 0.6, 0.8);
-
             System.out.println("END");
             System.exit(-1);
         }
@@ -43,7 +41,9 @@ public class Main {
             }
 
             source = new Grid(buffer, cols, rows, cellsize, north, south);
-////            output = new Grid(cols, rows, cellsize, north, south);
+            output = new Grid(cols, rows, cellsize, north, south);
+            new MaskFilter(source, output).execute();
+            buffer = output.getBuffer();
 //            buffer = source.getBuffer();
 
 
