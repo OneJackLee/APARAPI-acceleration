@@ -15,7 +15,10 @@ public class DriverClass {
 
         new GradientOperator().operate(input, output);
 
+        System.out.println("");
 
+        for (float i: output.getBuffer())
+            System.out.println(i);
 
 
 //        Kernel
