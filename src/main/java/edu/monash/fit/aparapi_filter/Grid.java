@@ -7,6 +7,7 @@ public class Grid {
     private float[] bufferReceived;
     private int cols, rows;
     private double cellSize, north, south;
+    private double east, west;
 
     public Grid(float[] bufferReceived, int cols, int rows, double cellSize, double north, double south){
         this.bufferReceived = bufferReceived;
@@ -17,6 +18,19 @@ public class Grid {
         this.south = south;
     }
 
+    public Grid(float[] bufferReceived, int cols, int rows, double cellSize,
+                double north, double south, double east, double west){
+        this.bufferReceived = bufferReceived;
+        this.cols = cols;
+        this.rows = rows;
+        this.cellSize = cellSize;
+        this.north = north;
+        this.south = south;
+        this.east = east;
+        this.west = west;
+    }
+
+
     public Grid(int cols, int rows, double cellSize, double north, double south){
         this.cols = cols;
         this.rows = rows;
@@ -25,6 +39,18 @@ public class Grid {
         this.south = south;
         this.bufferReceived = new float[this.cols * this.rows];
     }
+
+    public Grid(int cols, int rows, double cellSize, double north, double south, double east, double west){
+        this.cols = cols;
+        this.rows = rows;
+        this.cellSize = cellSize;
+        this.north = north;
+        this.south = south;
+        this.east = east;
+        this.west = west;
+        this.bufferReceived = new float[this.cols * this.rows];
+    }
+
 
     public void fillWithRandomFloat(){
         Random random = new Random();
@@ -121,6 +147,23 @@ public class Grid {
     public void setNorth(double north) {
         this.north = north;
     }
+
+    public double getEast() {
+        return east;
+    }
+
+    public void setEast(double east) {
+        this.east = east;
+    }
+
+    public double getWest() {
+        return west;
+    }
+
+    public void setWest(double west) {
+        this.west = west;
+    }
+
 
     public double getProjectedCellSize(int row) {
         // TODO replace with a better test to detect geographic coordinate systems that also uses the extent of the grid
