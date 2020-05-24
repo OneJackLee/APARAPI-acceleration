@@ -3,14 +3,14 @@ package edu.monash.fit.aparapi_filter;
 import com.aparapi.Kernel;
 import com.aparapi.Range;
 
-public class LowPassOperator implements AparapiOperator {
+public class NewLowPassOperator implements AparapiOperator {
     Grid src;
     Grid dest;
     double sigmaI;
     private static final int ITERATIONS = 4;
 
 
-    public LowPassOperator(double sigma){
+    public NewLowPassOperator(double sigma){
         this.sigmaI = sigma;
     }
 
