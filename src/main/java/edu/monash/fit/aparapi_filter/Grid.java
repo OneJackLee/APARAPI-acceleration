@@ -9,15 +9,6 @@ public class Grid {
     private double cellSize, north, south;
     private double east, west;
 
-    public Grid(float[] bufferReceived, int cols, int rows, double cellSize, double north, double south){
-        this.bufferReceived = bufferReceived;
-        this.cols = cols;
-        this.rows = rows;
-        this.cellSize = cellSize;
-        this.north = north;
-        this.south = south;
-    }
-
     public Grid(float[] bufferReceived, int cols, int rows, double cellSize,
                 double north, double south, double east, double west){
         this.bufferReceived = bufferReceived;
@@ -30,16 +21,6 @@ public class Grid {
         this.west = west;
     }
 
-
-    public Grid(int cols, int rows, double cellSize, double north, double south){
-        this.cols = cols;
-        this.rows = rows;
-        this.cellSize = cellSize;
-        this.north = north;
-        this.south = south;
-        this.bufferReceived = new float[this.cols * this.rows];
-    }
-
     public Grid(int cols, int rows, double cellSize, double north, double south, double east, double west){
         this.cols = cols;
         this.rows = rows;
@@ -50,7 +31,6 @@ public class Grid {
         this.west = west;
         this.bufferReceived = new float[this.cols * this.rows];
     }
-
 
     public void fillWithRandomFloat(){
         Random random = new Random();

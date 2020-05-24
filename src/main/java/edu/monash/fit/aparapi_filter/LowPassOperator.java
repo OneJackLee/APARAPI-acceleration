@@ -1,6 +1,7 @@
 package edu.monash.fit.aparapi_filter;
 
 import com.aparapi.Kernel;
+import com.aparapi.Range;
 
 public class LowPassOperator implements AparapiOperator {
     Grid src;
@@ -39,8 +40,15 @@ public class LowPassOperator implements AparapiOperator {
             @Override
             public void run() {
                 int i = getGlobalId();
+                boolean foundVoid = false;
+
+
+
             }
         };
+//        horizontalTransposingLowPassFilter.execute(Range.create(1));
+//        horizontalTransposingLowPassFilter.dispose();
+
 
 
     }

@@ -84,6 +84,7 @@ public class GradientOperator implements AparapiOperator {
         kernel.put(destBuffer);
 
 //        System.out.println(kernel.getTargetDevice());
+        kernel.execute(1);
 
         kernel.execute(Range.create(src.getLength()));
         kernel.get(destBuffer);

@@ -43,7 +43,7 @@ public class Main {
                     break;
                 }
                 // convert bytes to float
-                // Note: other languages likely use little-endian order, wich would
+                // Note: other languages likely use little-endian order, which would
                 // require shuffling the bytes
                 int intBits = b4 << 24 | (b3 & 0xFF) << 16 | (b2 & 0xFF) << 8 | (b1 & 0xFF);
                 buffer[i] = Float.intBitsToFloat(intBits);
