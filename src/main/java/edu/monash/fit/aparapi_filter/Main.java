@@ -6,16 +6,25 @@ public class Main {
 
     public static void main(String[] args) {
 
-        if (args.length < 5) {
+//        if (args.length < 5) {
+//            System.out.println("END");
+//            System.exit(-1);
+//        }
+
+        if (args.length < 7) {
             System.out.println("END");
             System.exit(-1);
         }
+
 
         int cols = Integer.parseInt(args[0]);
         int rows = Integer.parseInt(args[1]);
         double cellsize = Double.parseDouble(args[2]);
         double north = Double.parseDouble(args[3]);
         double south = Double.parseDouble(args[4]);
+
+        double east = Double.parseDouble(args[5]);
+        double west = Double.parseDouble(args[6]);
 
         int n = cols * rows;
 
@@ -40,8 +49,8 @@ public class Main {
                 buffer[i] = Float.intBitsToFloat(intBits);
             }
 
-            source = new Grid(buffer, cols, rows, cellsize, north, south);
-            output = new Grid(cols, rows, cellsize, north, south);
+            source = new Grid(buffer, cols, rows, cellsize, north, south, east, west);
+            output = new Grid(cols, rows, cellsize, north, south, east, west);
             new MaskFilter(source, output).execute();
             buffer = output.getBuffer();
 //            buffer = source.getBuffer();
