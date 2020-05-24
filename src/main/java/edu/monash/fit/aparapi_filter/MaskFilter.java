@@ -22,37 +22,34 @@ public class MaskFilter {
         float scale = 1f / (slopeThreshold - gainSlopeThreshold);
 
         new GradientOperator().operate(src, dest);
-        // LowPassOperator
-        // ClampToRangeOperator
+//        // LowPassOperator
+//        // ClampToRangeOperator
+//
+//        Kernel maskFilter = new OperatorKernel(src, dest){
+//            @Override
+//            public void run() {
+//                int i = getGlobalId();
+//                float value = srcBuffer[i];
+//                if (isFinite(value)){
+//                    value = 1 - (value - gainSlopeThreshold) * scale;
+//                    value = Math.max(0, Math.min(1, value));
+//                } else{
+//                    value = -1;
+//                }
+//                destBuffer[i] = value;
+//            }
+//
+//            public boolean isFinite(float f){
+//                return Math.abs(f) <= FLOAT_MAX;
+//            }
+//        };
+//
+//        maskFilter.execute(Range.create(dest.getLength()));
+//        maskFilter.dispose();
 
-        Kernel maskFilter = new OperatorKernel(src, dest){
-            @Override
-            public void run() {
-                int i = getGlobalId();
-                float value = srcBuffer[i];
-                if (isFinite(value)){
-                    value = 1 - (value - gainSlopeThreshold) * scale;
-                    value = Math.max(0, Math.min(1, value));
-                } else{
-                    value = -1;
-                }
-                destBuffer[i] = value;
-            }
-
-            public boolean isFinite(float f){
-                return Math.abs(f) <= FLOAT_MAX;
-            }
-        };
-
-        maskFilter.execute(Range.create(dest.getLength()));
-        maskFilter.dispose();
-
-
-    }
-
-    public void GradientOperatorExecute(){
 
     }
+
 
 
 
