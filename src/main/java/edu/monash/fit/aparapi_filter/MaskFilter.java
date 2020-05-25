@@ -13,7 +13,7 @@ public class MaskFilter {
         this.dest = dest;
     }
 
-    public void execute(){
+    public Grid execute(){
         float gainSlopeThresholdDeg = slopeThresholdDeg * Math.min(0.995f, relativeGain);
         float gainSlopeThreshold = (float) Math.tan(Math.toRadians(gainSlopeThresholdDeg));
         float scale = 1f / (slopeThreshold - gainSlopeThreshold);
@@ -26,8 +26,11 @@ public class MaskFilter {
         float[] srcBuffer = src.getBuffer();
         float[] destBuffer = dest.getBuffer();
 
-        new GradientOperator().operate(src, dest);
-        new DemoLowPassOperator(sigmaBlur).operate(dest, dest);
+        dest = new GradientOperator().operate(src);
+
+        dest = new DemoLowPassOperator(sigmaBlur).operate(dest);
+        return dest;
+
 
 //        new DemoClampToRangeOperator(gainSlopeThreshold, slopeThreshold).operate(dest, dest);
 //        // LowPassOperator
