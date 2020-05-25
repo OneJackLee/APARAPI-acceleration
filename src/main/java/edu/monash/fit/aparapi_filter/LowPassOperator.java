@@ -28,17 +28,12 @@ public class LowPassOperator implements AparapiOperator {
 
 
         Kernel kernel = new Kernel(){
+            @Override
+            public void run() {
 
-
-
-
-
+            }
         };
 
     }
 
-    @Override
-    public void operateValue(Grid src, Grid dest, int col, int row) {
-
-    }
 }

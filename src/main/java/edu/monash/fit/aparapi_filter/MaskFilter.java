@@ -21,31 +21,46 @@ public class MaskFilter {
         float gainSlopeThreshold = (float) Math.tan(Math.toRadians(gainSlopeThresholdDeg));
         float scale = 1f / (slopeThreshold - gainSlopeThreshold);
 
+
+        int srcCols = src.getCols();
+        int srcRows = src.getRows();
+        double srcNorth = src.getNorth();
+        double srcCellSizes = src.getCellSize();
+        float[] srcBuffer = src.getBuffer();
+        float[] destBuffer = dest.getBuffer();
+
         new GradientOperator().operate(src, dest);
+        new NewClampToRangeOperator(gainSlopeThreshold, slopeThreshold).operate(dest, dest);
 //        // LowPassOperator
 //        // ClampToRangeOperator
-//
-//        Kernel maskFilter = new OperatorKernel(src, dest){
-//            @Override
-//            public void run() {
-//                int i = getGlobalId();
-//                float value = srcBuffer[i];
-//                if (isFinite(value)){
-//                    value = 1 - (value - gainSlopeThreshold) * scale;
-//                    value = Math.max(0, Math.min(1, value));
-//                } else{
-//                    value = -1;
-//                }
-//                destBuffer[i] = value;
-//            }
-//
-//            public boolean isFinite(float f){
-//                return Math.abs(f) <= FLOAT_MAX;
-//            }
-//        };
-//
-//        maskFilter.execute(Range.create(dest.getLength()));
-//        maskFilter.dispose();
+
+        Kernel maskFilter = new Kernel() {
+            @Override
+            public void run() {
+                int i = getGlobalId();
+                float value = srcBuffer[i];
+                if (isFinite(value)){
+                    value = 1 - (value - gainSlopeThreshold) * scale;
+                    value = Math.max(0, Math.min(1, value));
+                } else{
+                    value = -1;
+                }
+                destBuffer[i] = value;
+            }
+
+            public boolean isFinite(float f){
+                return Math.abs(f) <= FLOAT_MAX;
+            }
+
+        };
+
+        maskFilter.setExplicit(true);
+        maskFilter.put(srcBuffer);
+        maskFilter.put(destBuffer);
+        maskFilter.execute(1);
+        maskFilter.execute(Range.create(dest.getLength()));
+        maskFilter.get(destBuffer);
+        maskFilter.dispose();
 
 
     }
