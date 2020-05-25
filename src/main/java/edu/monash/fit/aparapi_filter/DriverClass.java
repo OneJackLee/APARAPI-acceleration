@@ -14,7 +14,7 @@ public class DriverClass {
         for (float i: input.getBuffer())
             System.out.println(i);
 
-        new MaskFilter(input, output).execute();
+        output = new MaskFilter(input, output).execute();
 
         System.out.println("");
 
@@ -23,6 +23,7 @@ public class DriverClass {
 
 
 //        Kernel
+
 
     }
 

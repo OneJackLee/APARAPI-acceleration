@@ -12,8 +12,11 @@ public class GradientOperator implements AparapiOperator {
 
     @Override
     public void operate(Grid src, Grid dest) {
+    }
+
+    public Grid operate(Grid src) {
         this.src = src;
-        this.dest = dest;
+        this.dest = Grid.shallowCopy(src);
 
         int srcCols = src.getCols();
         int srcRows = src.getRows();
@@ -89,6 +92,8 @@ public class GradientOperator implements AparapiOperator {
         kernel.execute(Range.create(src.getLength()));
         kernel.get(destBuffer);
         kernel.dispose();
+        dest.setBufferReceived(destBuffer);
+        return dest;
     }
 
 }

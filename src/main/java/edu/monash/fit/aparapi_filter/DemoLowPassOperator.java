@@ -18,8 +18,12 @@ public class DemoLowPassOperator implements AparapiOperator {
 
     @Override
     public void operate(Grid src, Grid dest) {
+    }
+
+
+    public Grid operate(Grid src) {
         this.src = src;
-        this.dest = dest;
+        this.dest = Grid.shallowCopy(src);
         double sigma = sigmaI;
         if (sigma < 0) {
             throw new IllegalArgumentException("negative sigma");
@@ -28,9 +32,9 @@ public class DemoLowPassOperator implements AparapiOperator {
         int srcRows = src.getRows();
         double srcNorth = src.getNorth();
         double srcCellSizes = src.getCellSize();
+
         float[] srcBuffer = src.getBuffer();
         float[] destBuffer = this.dest.getBuffer();
-
         float[] tempBuffer = new float[srcCols * srcRows];
 
         int r = calculateR(sigma);
@@ -45,7 +49,9 @@ public class DemoLowPassOperator implements AparapiOperator {
             public void run() {
                 int i = getGlobalId();
                 boolean foundVoid = false;
-                blurRow(i, srcBuffer, destBuffer, srcCols);
+                copyAndReplaceVoids(i);
+
+//                blurRow(i, srcBuffer, destBuffer, srcCols);
 
 //                copyAndReplaceVoids(i);
 //
@@ -151,28 +157,6 @@ public class DemoLowPassOperator implements AparapiOperator {
                 }
             }
 
-//            private void blurRow(int i){
-//                int N = srcCols;
-//                double sum = 0;
-//                for (int n = -r; n <= r; ++n){
-//                    sum += srcBuffer[getDirectIndex(extension(N, n), i)];
-//                }
-//                sum = c1 * (srcBuffer[getDirectIndex(extension(N, r+1), i)]
-//                        + srcBuffer[getDirectIndex(extension(N, -r-1), i)]
-//                        + (c1 + c2) * sum);
-//
-//                destBuffer[getDirectIndex(0, i)] = (float) sum;
-//
-//                for (int n = 1; n < N; ++n){
-//                    sum += c1 *(srcBuffer[getDirectIndex(extension(N, n+r+1), i)]
-//                            - srcBuffer[getDirectIndex(extension(N, n-r-2), i)]
-//                            + c2 * srcBuffer[getDirectIndex(extension(N, n+r), i)]
-//                            - srcBuffer[getDirectIndex(extension(N, n-r-1), i)]
-//                    );
-//                    destBuffer[getDirectIndex(n,i)]= (float) sum;
-//                }
-//            }
-
             private void blurRow(int i, float[] src, float[] dest, int srcCols){
                 int N = srcCols;
                 double sum = 0;
@@ -243,7 +227,8 @@ public class DemoLowPassOperator implements AparapiOperator {
         horizontalTransposingLowPassFilter.dispose();
 
 
-
+        dest.setBufferReceived(destBuffer);
+        return dest;
     }
 
     private float calculateC1(double sigma, int r, double alpha){
