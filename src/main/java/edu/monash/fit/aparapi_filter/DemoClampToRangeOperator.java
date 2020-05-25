@@ -3,12 +3,12 @@ package edu.monash.fit.aparapi_filter;
 import com.aparapi.Kernel;
 import com.aparapi.Range;
 
-public class NewClampToRangeOperator implements AparapiOperator {
+public class DemoClampToRangeOperator implements AparapiOperator {
     Grid src;
     Grid dest;
     float minI, maxI;
 
-    public NewClampToRangeOperator(float min, float max){
+    public DemoClampToRangeOperator(float min, float max){
         this.minI = min;
         this.maxI = max;
 

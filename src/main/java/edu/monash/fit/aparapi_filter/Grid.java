@@ -32,10 +32,15 @@ public class Grid {
         this.bufferReceived = new float[this.cols * this.rows];
     }
 
+    public static Grid shallowCopy(Grid toCopy){
+        return new Grid(toCopy.getCols(), toCopy.getRows(), toCopy.getCellSize(), toCopy.getNorth(),
+                toCopy.getSouth(), toCopy.getEast(), toCopy.getWest());
+    }
+
     public void fillWithRandomFloat(){
         Random random = new Random();
         float max = 4000;
-        float min = 1000;
+        float min = 2500;
         for(int i = 0; i <(  getCols() * getRows()); i++){
             this.set(random.nextFloat() * (max - min) + min, i);
         }
