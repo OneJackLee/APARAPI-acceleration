@@ -3,8 +3,6 @@ package edu.monash.fit.aparapi_filter;
 import com.aparapi.Kernel;
 import com.aparapi.Range;
 
-import java.util.Arrays;
-
 public class DemoLowPassOperator implements AparapiOperator {
     Grid src;
     Grid dest;
@@ -17,7 +15,8 @@ public class DemoLowPassOperator implements AparapiOperator {
     }
 
     @Override
-    public void operate(Grid src, Grid dest) {
+    public Grid operate(Grid src, Grid dest) {
+        return src;
     }
 
 

@@ -14,7 +14,7 @@ public class DemoClampToRangeOperator implements AparapiOperator {
 
     }
     @Override
-    public void operate(Grid src, Grid dest) {
+    public Grid operate(Grid src, Grid dest) {
         this.src = src;
         this.dest = dest;
 
@@ -45,5 +45,6 @@ public class DemoClampToRangeOperator implements AparapiOperator {
         kernel.dispose();
 
 
+        return src;
     }
 }

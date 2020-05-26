@@ -4,7 +4,7 @@ import com.aparapi.Kernel;
 
 public class LowPassOperator implements AparapiOperator {
     @Override
-    public void operate(Grid src, Grid dest) {
+    public Grid operate(Grid src, Grid dest) {
         // when making new instance Grid, is west included
         float[] srcGrid = src.getBuffer();
         int rows = src.getRows();
@@ -34,6 +34,7 @@ public class LowPassOperator implements AparapiOperator {
             }
         };
 
+        return src;
     }
 
 }

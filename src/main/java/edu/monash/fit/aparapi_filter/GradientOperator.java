@@ -11,7 +11,8 @@ public class GradientOperator implements AparapiOperator {
     }
 
     @Override
-    public void operate(Grid src, Grid dest) {
+    public Grid operate(Grid src, Grid dest) {
+        return src;
     }
 
     public Grid operate(Grid src) {
