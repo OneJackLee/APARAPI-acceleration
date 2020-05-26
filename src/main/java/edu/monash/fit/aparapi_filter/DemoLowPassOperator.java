@@ -3,6 +3,8 @@ package edu.monash.fit.aparapi_filter;
 import com.aparapi.Kernel;
 import com.aparapi.Range;
 
+import java.util.Arrays;
+
 public class DemoLowPassOperator implements AparapiOperator {
     Grid src;
     Grid dest;
@@ -16,7 +18,7 @@ public class DemoLowPassOperator implements AparapiOperator {
 
     @Override
     public Grid operate(Grid src, Grid dest) {
-        return src;
+        return null;
     }
 
 
@@ -41,7 +43,7 @@ public class DemoLowPassOperator implements AparapiOperator {
         float c1 = calculateC1(sigma, r, alpha);
         float c2 = calculateC2(sigma, r, alpha);
 
-        final boolean firstPass = true;
+        final boolean firstPass[] = new boolean[]{true};
 
         Kernel horizontalTransposingLowPassFilter = new Kernel(){
             @Override
@@ -56,12 +58,12 @@ public class DemoLowPassOperator implements AparapiOperator {
 //
 //                blurRow(i);
 
-                if (firstPass && foundVoid){
+                if (firstPass[0] && foundVoid){
                     copyAndReplaceVoids(i);
-//                    blurRow(i);
+                    blurRow(i, destBuffer, tempBuffer, srcCols);
                 }
                 else{
-//                    blurRow(i);
+                    blurRow(i, srcBuffer, tempBuffer, srcCols);
 
                 }
 //                for (int j = 0; j < srcCols; j ++){
@@ -109,24 +111,6 @@ public class DemoLowPassOperator implements AparapiOperator {
                 for (int j = first; j <= last; j++) {
                     float v = srcBuffer[getDirectIndex(j, i)];
                     if (!isFinite(v)){
-//                        for (int k = 1; k < N; k ++){
-//                            // scan forwards
-//                            if (j + k <= last){
-//                                v = srcBuffer[getDirectIndex(j+k,i)];
-//                                if (isFinite(v)){
-//                                    destBuffer[i] = v;
-//                                    break;
-//                                }
-//                            }
-//
-//                            if (j - k >= first) {
-//                                v = srcBuffer[getDirectIndex(j - k, i)];
-//                                if (isFinite(v)) {
-//                                    destBuffer[i] = v;
-//                                    break;
-//                                }
-//                            }
-//                        }
                         int k = 1;
                         boolean flagChecker = false;
                         while (k <N && !flagChecker){
@@ -221,8 +205,14 @@ public class DemoLowPassOperator implements AparapiOperator {
             }
 
         };
+        horizontalTransposingLowPassFilter.setExplicit(true);
+        horizontalTransposingLowPassFilter.put(srcBuffer);
+        horizontalTransposingLowPassFilter.put(destBuffer);
+        horizontalTransposingLowPassFilter.put(tempBuffer);
+        horizontalTransposingLowPassFilter.put(firstPass);
         horizontalTransposingLowPassFilter.execute(1);
         horizontalTransposingLowPassFilter.execute(Range.create(srcRows));
+        horizontalTransposingLowPassFilter.get(destBuffer);
         horizontalTransposingLowPassFilter.dispose();
 
 
