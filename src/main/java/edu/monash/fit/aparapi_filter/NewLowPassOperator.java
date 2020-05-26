@@ -53,34 +53,13 @@ public class NewLowPassOperator implements AparapiOperator {
                     //blurrow
 
                 int i = getGlobalId();
-                copyAndReplaceVoids(i);
+                copyAndReplaceVoids(i); // if !isFinite(v) (line 103), blurRow  (line 145)
 
 
                 for (int j = 0; j < srcCols; j ++){
-
                     destBuffer[getDirectIndex(j, i)] = srcBuffer[getDirectIndex(j, i)];
                 }
             // if the other methods r ok, i'll copy them in later
-            }
-        };
-
-        Kernel horizontalTransposingLowPassFilterNFP = new Kernel(){ // WHEN NOT FIRST PASS
-            @Override
-            public void run() {
-
-                // not first pass
-                //blurrow
-
-                int i = getGlobalId();
-                copyAndReplaceVoids(i);
-
-                blurRow(i, srcBuffer, destBuffer, srcCols);
-
-
-                for (int j = 0; j < srcCols; j ++){
-
-                    destBuffer[getDirectIndex(j, i)] = srcBuffer[getDirectIndex(j, i)];
-                }
             }
 
             private void copyAndReplaceVoids(int i) {
@@ -162,12 +141,187 @@ public class NewLowPassOperator implements AparapiOperator {
                             k ++;
                         }
 
+                        // is it okay to blur here ?
+                        blurRow(i, srcBuffer, destBuffer, srcCols);
+
                     }
                     else{
                         destBuffer[getDirectIndex(j,i)]= srcBuffer[getDirectIndex(j,i)];
                     }
                 }
             }
+
+            private void blurRow(int i, float[] src, float[] dest, int srcCols){
+                int N = srcCols;
+                double sum = 0;
+                for (int n = -r; n <= r; ++n){
+                    sum += src[getDirectIndex(extension(N, n), i)];
+                }
+                sum = c1 * (src[getDirectIndex(extension(N, r+1), i)]
+                        + src[getDirectIndex(extension(N, -r-1), i)]
+                        + (c1 + c2) * sum);
+
+                dest[getDirectIndex(0, i)] = (float) sum;
+
+                for (int n = 1; n < N; ++n){
+                    sum += c1 *(src[getDirectIndex(extension(N, n+r+1), i)]
+                            - src[getDirectIndex(extension(N, n-r-2), i)]
+                            + c2 * src[getDirectIndex(extension(N, n+r), i)]
+                            - src[getDirectIndex(extension(N, n-r-1), i)]
+                    );
+                    dest[getDirectIndex(n,i)]= (float) sum;
+                }
+            }
+
+
+            /**
+             * Reflect index for out-of-bounds access. This is currently a
+             * bottleneck and could be avoided for the center of the grid (if the
+             * filter is smaller than the grid).
+             *
+             * @param N
+             * @param n
+             * @return
+             */
+            private int extension(int N, int n) {
+                boolean flagChecker = false;
+                while (!flagChecker) {
+                    if (n < 0) {
+                        n = -1 - n;
+                        /* Reflect over n = -1/2.    */
+                    } else if (n >= N) {
+                        n = 2 * N - 1 - n;
+                        /* Reflect over n = N - 1/2. */
+                    } else{
+                        flagChecker = true;
+                    }
+                }
+                return n;
+            }
+
+            public int getRow(int directIndex){
+                return directIndex / srcCols;
+            }
+
+            public int getCol(int directIndex){
+                return directIndex % srcCols;
+            }
+
+            public int getDirectIndex(int col, int row){
+                return col + row * srcCols;
+            }
+
+            public boolean isFinite(float f){
+                return Math.abs(f) <= FLOAT_MAX;
+            }
+        };
+
+        Kernel horizontalTransposingLowPassFilterNFP = new Kernel(){ // WHEN NOT FIRST PASS
+            @Override
+            public void run() {
+
+                // not first pass
+                //blurrow
+
+                int i = getGlobalId();
+
+                blurRow(i, srcBuffer, destBuffer, srcCols);
+
+
+                for (int j = 0; j < srcCols; j ++){
+
+                    destBuffer[getDirectIndex(j, i)] = srcBuffer[getDirectIndex(j, i)];
+                }
+            }
+//
+//            private void copyAndReplaceVoids(int i) {
+//                int N = srcCols;
+//
+//                // Often void values are placed along borders of grids. Therefore
+//                // start searching from both ends of the row.
+//                // Test whether start of row contains void values
+//                int first = 0;
+//                while (first < N && !isFinite(srcBuffer[getDirectIndex(first, i)])) {
+//                    first++;
+//                }
+//
+//                // test whether end of row contains void values
+//                int last = N - 1;
+//                while (last > 0 && !isFinite(srcBuffer[getDirectIndex(first, i)])) {
+//                    last--;
+//                }
+//
+//
+//                if (first == N) {
+//                    // entire row is void
+//                    for (int j =0 ; j < srcCols; j++){
+//                        destBuffer[getDirectIndex(j, i)] = 0;
+//                    }
+//                    return;
+//                }
+//
+//                // fill first void cells of row with first valid value
+//                for (int j = 0; j < first; j++) {
+//                    destBuffer[getDirectIndex(j, i)] = srcBuffer[getDirectIndex(first, i)];
+//                }
+//
+//                // fill void cells at end of row with last valid value
+//                for (int j = N - 1; j > last; j--) {
+//                    destBuffer[getDirectIndex(j, i)] = srcBuffer[getDirectIndex(last, i)];
+//                }
+//
+//                for (int j = first; j <= last; j++) {
+//                    float v = srcBuffer[getDirectIndex(j, i)];
+//                    if (!isFinite(v)){
+//                        for (int k = 1; k < N; k ++){
+//                            // scan forwards
+//                            if (j + k <= last){
+//                                v = srcBuffer[getDirectIndex(j+k,i)];
+//                                if (isFinite(v)){
+//                                    destBuffer[i] = v;
+//                                    k=N; // break
+//                                }
+//                            }
+//
+//                            if (j - k >= first) {
+//                                v = srcBuffer[getDirectIndex(j - k, i)];
+//                                if (isFinite(v)) {
+//                                    destBuffer[i] = v;
+//                                    k=N; // break
+//                                }
+//                            }
+//                        }
+//                        int k = 1;
+//                        boolean flagChecker = false;
+//                        while (k <N && !flagChecker){
+//                            // scan forwards
+//                            if (j + k <= last && !flagChecker){
+//                                v = srcBuffer[getDirectIndex(j+k,i)];
+//                                if (isFinite(v)){
+//                                    destBuffer[i] = v;
+//                                    flagChecker = true;
+//                                }
+//                            }
+//
+//                            if (j - k >= first && !flagChecker) {
+//                                v = srcBuffer[getDirectIndex(j - k, i)];
+//                                if (isFinite(v)) {
+//                                    destBuffer[i] = v;
+//                                    flagChecker = true;
+//                                }
+//                            }
+//                            k ++;
+//                        }
+//
+//                        // is it okay to blur here ?
+//                        blurRow(i, srcBuffer, destBuffer, srcCols);
+//
+//                    }
+//                    else{
+//                        destBuffer[getDirectIndex(j,i)]= srcBuffer[getDirectIndex(j,i)];
+//                    }
+//                }
+//            }
 
             private void blurRow(int i, float[] src, float[] dest, int srcCols){
                 int N = srcCols;
