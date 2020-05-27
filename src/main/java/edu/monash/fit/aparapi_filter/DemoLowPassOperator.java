@@ -11,6 +11,8 @@ public class DemoLowPassOperator implements AparapiOperator {
     double sigmaI;
     private static final int ITERATIONS = 4;
     private final float FLOAT_MAX = Float.MAX_VALUE;
+    private final float FLOAT_INFINITY = Float.POSITIVE_INFINITY;
+    private final float FLOAT_NaN = Float.NaN;
 
     public DemoLowPassOperator(double sigma){
         this.sigmaI = sigma;
@@ -50,13 +52,6 @@ public class DemoLowPassOperator implements AparapiOperator {
             public void run() {
                 int i = getGlobalId();
                 boolean foundVoid = false;
-                copyAndReplaceVoids(i);
-
-//                blurRow(i, srcBuffer, destBuffer, srcCols);
-
-//                copyAndReplaceVoids(i);
-//
-//                blurRow(i);
 
                 if (firstPass[0] && foundVoid){
                     copyAndReplaceVoids(i);
@@ -64,12 +59,16 @@ public class DemoLowPassOperator implements AparapiOperator {
                 }
                 else{
                     blurRow(i, srcBuffer, tempBuffer, srcCols);
+                    if (firstPass[0] && !isFinite(tempBuffer[getDirectIndex(srcCols-1, i)])){
+                        foundVoid = true;
+                        copyAndReplaceVoids(i);
+                        blurRow(i, destBuffer, tempBuffer, srcCols);
+                    }
 
                 }
-//                for (int j = 0; j < srcCols; j ++){
-//
-//                    destBuffer[getDirectIndex(j, i)] = srcBuffer[getDirectIndex(j, i)];
-//                }
+                blurRow(i, tempBuffer, destBuffer, srcCols);
+                blurRow(i, destBuffer, tempBuffer, srcCols);
+                blurRow(i, tempBuffer, destBuffer, srcCols);
             }
 
             private void copyAndReplaceVoids(int i) {
@@ -215,6 +214,52 @@ public class DemoLowPassOperator implements AparapiOperator {
         horizontalTransposingLowPassFilter.get(destBuffer);
         horizontalTransposingLowPassFilter.dispose();
 
+        firstPass[0] = false;
+//        tempBuffer = new float[srcCols * srcRows];
+        horizontalTransposingLowPassFilter.setExplicit(true);
+        horizontalTransposingLowPassFilter.put(srcBuffer);
+        horizontalTransposingLowPassFilter.put(destBuffer);
+        horizontalTransposingLowPassFilter.put(tempBuffer);
+        horizontalTransposingLowPassFilter.put(firstPass);
+        horizontalTransposingLowPassFilter.execute(1);
+        horizontalTransposingLowPassFilter.execute(Range.create(srcRows));
+        horizontalTransposingLowPassFilter.get(destBuffer);
+        horizontalTransposingLowPassFilter.dispose();
+
+        Kernel copyVoidOperator = new Kernel(){
+            @Override
+            public void run() {
+                int i = getGlobalId();
+                if (!isFinite(srcBuffer[i])){
+                    destBuffer[i] = FLOAT_NaN;
+                }
+
+            }
+
+            public int getRow(int directIndex){
+                return directIndex / srcCols;
+            }
+
+            public int getCol(int directIndex){
+                return directIndex % srcCols;
+            }
+
+            public int getDirectIndex(int col, int row){
+                return col + row * srcCols;
+            }
+
+            public boolean isFinite(float f){
+                return Math.abs(f) <= FLOAT_MAX;
+            }
+
+        };
+        copyVoidOperator.setExplicit(true);
+        copyVoidOperator.put(srcBuffer);
+        copyVoidOperator.put(destBuffer);
+        copyVoidOperator.execute(1);
+        copyVoidOperator.execute(Range.create(srcCols * srcRows));
+        copyVoidOperator.get(destBuffer);
+        copyVoidOperator.dispose();
 
         dest.setBufferReceived(destBuffer);
         return dest;

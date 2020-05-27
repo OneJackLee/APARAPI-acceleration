@@ -47,4 +47,9 @@ public class ClampToRangeOperator implements AparapiOperator {
         return src;
 
     }
+
+    @Override
+    public Grid operate(Grid src) {
+        return null;
+    }
 }

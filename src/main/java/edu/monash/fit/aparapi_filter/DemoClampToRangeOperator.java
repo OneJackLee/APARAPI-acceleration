@@ -13,10 +13,15 @@ public class DemoClampToRangeOperator implements AparapiOperator {
         this.maxI = max;
 
     }
+
     @Override
     public Grid operate(Grid src, Grid dest) {
+        return null;
+    }
+
+    public Grid operate(Grid src) {
         this.src = src;
-        this.dest = dest;
+        this.dest = Grid.shallowCopy(src);
 
         int srcCols = src.getCols();
         int srcRows = src.getRows();
@@ -45,6 +50,6 @@ public class DemoClampToRangeOperator implements AparapiOperator {
         kernel.dispose();
 
 
-        return src;
+        return dest;
     }
 }

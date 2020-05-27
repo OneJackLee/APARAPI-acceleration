@@ -12,7 +12,7 @@ public class GradientOperator implements AparapiOperator {
 
     @Override
     public Grid operate(Grid src, Grid dest) {
-        return src;
+        return null;
     }
 
     public Grid operate(Grid src) {
