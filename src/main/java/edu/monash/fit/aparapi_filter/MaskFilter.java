@@ -55,15 +55,15 @@ public class MaskFilter {
 
         };
 
-//        maskFilter.setExplicit(true);
-//        maskFilter.put(newSrcBuffer);
-//        maskFilter.put(newDestBuffer);
-//        maskFilter.execute(1);
-//        maskFilter.execute(Range.create(dest.getLength()));
-//        maskFilter.get(newDestBuffer);
-//        maskFilter.dispose();
-//
-//        dest.setBufferReceived(newDestBuffer);
+        maskFilter.setExplicit(true);
+        maskFilter.put(newSrcBuffer);
+        maskFilter.put(newDestBuffer);
+        maskFilter.execute(1);
+        maskFilter.execute(Range.create(dest.getLength()));
+        maskFilter.get(newDestBuffer);
+        maskFilter.dispose();
+
+        dest.setBufferReceived(newDestBuffer);
 
         return dest;
 
