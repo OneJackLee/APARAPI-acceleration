@@ -1,8 +1,8 @@
-package edu.monash.fit.aparapi_filter;
+package edu.monash.fit.aparapi_filter.operator;
 
 import com.aparapi.Kernel;
 import com.aparapi.Range;
-import scala.Array;
+import edu.monash.fit.aparapi_filter.Grid;
 
 import java.util.Arrays;
 

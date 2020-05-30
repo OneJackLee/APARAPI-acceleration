@@ -1,7 +1,7 @@
 package edu.monash.fit.aparapi_filter;
 
-import com.aparapi.*;
 import com.aparapi.device.Device;
+import edu.monash.fit.aparapi_filter.operator.HorizontalTransposingLowPassFilter;
 
 public class DriverClass {
 
@@ -16,7 +16,7 @@ public class DriverClass {
 
         input.set(Float.MAX_VALUE, 0);
         System.out.println("available " + nbrThreads); // print the selected mode
-        System.out.println(">>>>>>>>>>>>" + ((int) (input.getRows() / nbrThreads) + 1) );
+        System.out.println(">>>>>>>>>>>>" + ((input.getRows() / nbrThreads) + 1) );
 
         System.out.println(Device.bestGPU());
 
@@ -25,7 +25,7 @@ public class DriverClass {
 
         output = new MaskFilter(input, output).execute();
 
-        System.out.println("");
+        System.out.println();
 
         for (float i: output.getBuffer())
             System.out.println("output: " +i);

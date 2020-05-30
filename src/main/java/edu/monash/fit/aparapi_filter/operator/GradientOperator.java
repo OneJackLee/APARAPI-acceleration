@@ -2,7 +2,6 @@ package edu.monash.fit.aparapi_filter.operator;
 
 import com.aparapi.Kernel;
 import com.aparapi.Range;
-import edu.monash.fit.aparapi_filter.AparapiOperator;
 import edu.monash.fit.aparapi_filter.Grid;
 
 public class GradientOperator implements AparapiOperator {

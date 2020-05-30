@@ -1,8 +1,12 @@
+package edu.monash.fit.unused;
+
+import com.aparapi.Kernel;
+import com.aparapi.Range;
 import java.util.Random;
 
-public class Second {
+public class First {
     public static void main(String[] _args){
-        System.out.println("JAVA normal");
+        System.out.println("APARAPI");
         Random rand = new Random();
 
         int greatest = 100000000;
@@ -16,13 +20,20 @@ public class Second {
             inB[i] = rand.nextFloat();
         }
 
-        long startTime = System.currentTimeMillis();
-        for (int i= 0; i < greatest; i++){
-            // result[i] = inA[i] + inB[i];
-             result[i] = (float)(Math.cos(Math.sin(inA[i])) + Math.sin(Math.cos(inB[i])));
-        }
-        long endTime = System.currentTimeMillis();
+        Kernel kernel = new Kernel(){
+            public void run() {
+                int i = getGlobalId();
+//                result[i] = inA[i] + inB[i];
+                result[i] = (float)(Math.cos(Math.sin(inA[i])) + Math.sin(Math.cos(inB[i])));
 
+            }
+        };
+
+//        Range range = Range.create(result.length);
+        long startTime = System.currentTimeMillis();
+        kernel.execute(Range.create(result.length));
+        long endTime = System.currentTimeMillis();
+        kernel.dispose();
 
 //        for(int i = 0; i < 5; i++) {
 //            System.out.println("" + result[i]);
@@ -31,11 +42,19 @@ public class Second {
         System.out.println("Time spend:" + (endTime - startTime));
 
 //        final float[] totalSum = new float[1];
+//        Kernel kernel1 = new Kernel(){
+//            public void run() {
+//                int i = getGlobalId();
+//                totalSum[0] += result[i];
+//            }
+//        };
+//
+////        Range newRange = Range.create(result.length);
 //        startTime = System.currentTimeMillis();
-//        for (int i= 0; i < greatest; i++){
-//            totalSum[0] += result[i];
-//        }
+//        kernel1.execute(Range.create(result.length));
 //        endTime = System.currentTimeMillis();
+//
+//        kernel1.dispose();
 //
 //        System.out.println("total sum:" + totalSum[0]);
 //

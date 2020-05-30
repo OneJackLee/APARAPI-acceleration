@@ -1,11 +1,10 @@
-package edu.monash.fit.aparapi_filter;
+package edu.monash.fit.aparapi_filter.operator;
 
 import com.aparapi.Kernel;
 import com.aparapi.Range;
+import edu.monash.fit.aparapi_filter.Grid;
 
-import java.util.Arrays;
-
-public class DemoLowPassOperator implements AparapiOperator {
+public class LowPassOperator implements AparapiOperator {
     private final float FLOAT_MAX = Float.MAX_VALUE, FLOAT_VOID = Float.NaN;
 
 
@@ -13,7 +12,7 @@ public class DemoLowPassOperator implements AparapiOperator {
     Grid dest;
     float sigmaValue;
 
-    public DemoLowPassOperator(float sigma){
+    public LowPassOperator(float sigma){
         this.sigmaValue = sigma;
 
     }

@@ -1,10 +1,10 @@
-import com.aparapi.Kernel;
-import com.aparapi.Range;
+package edu.monash.fit.unused;
+
 import java.util.Random;
 
-public class First {
+public class Second {
     public static void main(String[] _args){
-        System.out.println("APARAPI");
+        System.out.println("JAVA normal");
         Random rand = new Random();
 
         int greatest = 100000000;
@@ -18,20 +18,13 @@ public class First {
             inB[i] = rand.nextFloat();
         }
 
-        Kernel kernel = new Kernel(){
-            public void run() {
-                int i = getGlobalId();
-//                result[i] = inA[i] + inB[i];
-                result[i] = (float)(Math.cos(Math.sin(inA[i])) + Math.sin(Math.cos(inB[i])));
-
-            }
-        };
-
-//        Range range = Range.create(result.length);
         long startTime = System.currentTimeMillis();
-        kernel.execute(Range.create(result.length));
+        for (int i= 0; i < greatest; i++){
+            // result[i] = inA[i] + inB[i];
+             result[i] = (float)(Math.cos(Math.sin(inA[i])) + Math.sin(Math.cos(inB[i])));
+        }
         long endTime = System.currentTimeMillis();
-        kernel.dispose();
+
 
 //        for(int i = 0; i < 5; i++) {
 //            System.out.println("" + result[i]);
@@ -40,19 +33,11 @@ public class First {
         System.out.println("Time spend:" + (endTime - startTime));
 
 //        final float[] totalSum = new float[1];
-//        Kernel kernel1 = new Kernel(){
-//            public void run() {
-//                int i = getGlobalId();
-//                totalSum[0] += result[i];
-//            }
-//        };
-//
-////        Range newRange = Range.create(result.length);
 //        startTime = System.currentTimeMillis();
-//        kernel1.execute(Range.create(result.length));
+//        for (int i= 0; i < greatest; i++){
+//            totalSum[0] += result[i];
+//        }
 //        endTime = System.currentTimeMillis();
-//
-//        kernel1.dispose();
 //
 //        System.out.println("total sum:" + totalSum[0]);
 //

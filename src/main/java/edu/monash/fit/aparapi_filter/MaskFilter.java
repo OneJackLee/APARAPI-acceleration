@@ -2,13 +2,14 @@ package edu.monash.fit.aparapi_filter;
 
 import com.aparapi.Kernel;
 import com.aparapi.Range;
-import edu.monash.fit.aparapi_filter.operator.DemoClampToRangeOperator;
+import edu.monash.fit.aparapi_filter.operator.ClampToRangeOperator;
+import edu.monash.fit.aparapi_filter.operator.LowPassOperator;
 import edu.monash.fit.aparapi_filter.operator.GradientOperator;
 
 public class MaskFilter {
     private final static float slopeThresholdDeg = 6f, slopeThreshold = (float) Math.tan(Math.toRadians(slopeThresholdDeg));
     private final static float sigmaBlur = 6f, relativeGain = 0.5f, sigmaSmooth = 20f;
-    private Grid src;
+    private final Grid src;
     private Grid dest;
     private final float FLOAT_MAX = Float.MAX_VALUE;
 
@@ -28,11 +29,11 @@ public class MaskFilter {
 
         dest = new GradientOperator().operate(src);
 
-        dest = new DemoLowPassOperator(sigmaBlur).operate(dest);
+        dest = new LowPassOperator(sigmaBlur).operate(dest);
 
-        dest = new DemoClampToRangeOperator(gainSlopeThreshold, slopeThreshold).operate(dest);
+        dest = new ClampToRangeOperator(gainSlopeThreshold, slopeThreshold).operate(dest);
 
-        dest = new DemoLowPassOperator(sigmaSmooth).operate(dest);
+        dest = new LowPassOperator(sigmaSmooth).operate(dest);
 
 
         float[] newSrcBuffer = dest.getBuffer();
