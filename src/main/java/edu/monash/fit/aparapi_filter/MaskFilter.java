@@ -2,6 +2,8 @@ package edu.monash.fit.aparapi_filter;
 
 import com.aparapi.Kernel;
 import com.aparapi.Range;
+import edu.monash.fit.aparapi_filter.operator.DemoClampToRangeOperator;
+import edu.monash.fit.aparapi_filter.operator.GradientOperator;
 
 public class MaskFilter {
     private final static float slopeThresholdDeg = 6f, slopeThreshold = (float) Math.tan(Math.toRadians(slopeThresholdDeg));
@@ -23,17 +25,19 @@ public class MaskFilter {
 
         int srcCols = src.getCols();
         int srcRows = src.getRows();
-        double srcNorth = src.getNorth();
-        double srcCellSizes = src.getCellSize();
-        float[] srcBuffer = src.getBuffer();
-        float[] destBuffer = dest.getBuffer();
 
         dest = new GradientOperator().operate(src);
-        dest = new DemoLowPassOperator(sigmaBlur).operate(dest);
+
+
+//        dest = new DemoLowPassOperator(sigmaBlur).operate(dest);
+
+
         dest = new DemoClampToRangeOperator(gainSlopeThreshold, slopeThreshold).operate(dest);
+
         dest = new DemoLowPassOperator(sigmaSmooth).operate(dest);
+
+
         float[] newSrcBuffer = dest.getBuffer();
-//        newSrcBuffer[0] = 0.052f;
         float[] newDestBuffer = new float[srcCols * srcRows];
         Kernel maskFilter = new Kernel() {
             @Override
@@ -64,16 +68,7 @@ public class MaskFilter {
         maskFilter.dispose();
 
         dest.setBufferReceived(newDestBuffer);
-
         return dest;
-
-
-//        new DemoClampToRangeOperator(gainSlopeThreshold, slopeThreshold).operate(dest, dest);
-//        // LowPassOperator
-//        // ClampToRangeOperator
-
-
-
     }
 
 
