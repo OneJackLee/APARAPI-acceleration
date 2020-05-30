@@ -25,9 +25,12 @@ public class DemoLowPassOperator implements AparapiOperator {
 
     @Override
     public Grid operate(Grid src) {
+        Grid postProcessingGrid;
         this.src = src;
         Grid transposedGrid = new HorizontalTransposingLowPassFilter(true, this.sigmaValue).operate(this.src);
-        Grid postProcessingGrid = new HorizontalTransposingLowPassFilter(false, this.sigmaValue).operate(transposedGrid);
+        postProcessingGrid = new HorizontalTransposingLowPassFilter(false, this.sigmaValue).operate(transposedGrid);
+//        postProcessingGrid = transposedGrid;
+
         float[] srcBuffer = src.getBuffer();
         float[] destBuffer = postProcessingGrid.getBuffer();
 

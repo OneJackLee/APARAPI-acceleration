@@ -2,11 +2,10 @@ package edu.monash.fit.aparapi_filter;
 
 import com.aparapi.Kernel;
 import com.aparapi.Range;
-import scala.Array;
 
 import java.util.Arrays;
 
-public class HorizontalTransposingLowPassFilter implements AparapiOperator {
+public class BackupHorizontalTransposingLowPassFilter implements AparapiOperator {
     private final double sigmaI;
     Grid src;
     Grid dest;
@@ -19,7 +18,7 @@ public class HorizontalTransposingLowPassFilter implements AparapiOperator {
     private final float FLOAT_NaN = Float.NaN;
 
 
-    public HorizontalTransposingLowPassFilter(boolean firstPass, double sigma){
+    public BackupHorizontalTransposingLowPassFilter(boolean firstPass, double sigma){
         firstPassI = firstPass;
         this.sigmaI = sigma;
     }
@@ -38,72 +37,68 @@ public class HorizontalTransposingLowPassFilter implements AparapiOperator {
         this.src = src;
         this.dest = new Grid(src.getRows(), src.getCols(), src.getCellSize(),src.getNorth(), src.getSouth(), src.getEast(), src.getWest());
 
+        int[] startIndexes;
+        int[] endIndexes;
+
         float[] srcBuffer = this.src.getBuffer();
         float[] destBuffer = this.dest.getBuffer();
+
         boolean[] firstPass = {this.firstPassI};
 
         final int srcCols = src.getCols();
         final int srcRows = src.getRows();
-        int size = srcRows/NBR_CACHED_ROWS + (srcRows%NBR_CACHED_ROWS > 0 ? 1 : 0);
+        float[][] cachedRows = new float[NBR_CACHED_ROWS][];
 
+        for (int i = 0; i < NBR_CACHED_ROWS; i++)
+            cachedRows[i] = new float[srcCols];
 
-        float[][][] cachedRows = new float[size][][];
+        float[] srcRow = new float[srcCols];
 
-        for(int i = 0 ; i < size ; i++){
-            cachedRows[i] = new float[NBR_CACHED_ROWS][];
-            for (int j = 0; j < NBR_CACHED_ROWS; j ++)
-                cachedRows[i][j] = new float[srcCols];
-        }
-        float[][] srcRow = new float[size][];
-        float[][] tmpRow = new float[size][];
-
-        for(int i = 0 ; i < size; i++){
-            srcRow[i] = new float[srcCols];
-            tmpRow[i] = new float[srcCols];
-        }
-
-        boolean[] foundVoid = new boolean[size];
+        float[] tmpRow = new float[srcCols];
+        boolean[] foundVoid = new boolean[srcRows/NBR_CACHED_ROWS + srcRows%NBR_CACHED_ROWS];
         Arrays.fill(foundVoid, false);
 
         Kernel kernel = new Kernel(){
             @Override
             public void run() {
-                int index = getGlobalId();
-                int start = index * NBR_CACHED_ROWS;
-//                for (int row=start; row< start+ NBR_CACHED_ROWS && row < srcRows; row++){}
-                for (int i = 0 ; i < NBR_CACHED_ROWS; i++){
-                    int rowID = start + i;
+                int i = getGlobalId();
+                for (int j = 0 ; j < NBR_CACHED_ROWS; j++){
+                    int rowID = j + i*NBR_CACHED_ROWS;
                     if (rowID < srcRows){
-                        for (int c = 0; c < srcCols; c++){
-                            srcRow[index][c] = srcBuffer[getDirectIndex(c, rowID)];
+                        for (int c=0; c < srcCols; c ++){
+                            srcRow[c] = srcBuffer[getDirectIndex(c, rowID)];
+//                            srcBuffer[getDirectIndex(c, rowID)] = c;
                         }
-                        if (firstPass[0] && foundVoid[index]){
-                            copyAndReplaceVoids(srcRow[index], cachedRows[index][i], srcRow[index].length);
-                            blurRow(cachedRows[index][i], tmpRow[index], cachedRows[index][i].length);
+                        //cachedRows[j];
+                        if (firstPass[0] && foundVoid[i]){
+                            copyAndReplaceVoids(srcRow, cachedRows[j], srcRow.length);
+                            blurRow(cachedRows[j], tmpRow, cachedRows[j].length);
                         } else{
-                            blurRow(srcRow[index], tmpRow[index], srcRow[index].length);
-                            if (firstPass[0] && !isFinite(tmpRow[index][srcCols -1])){
-                                foundVoid[index] = true;
-                                copyAndReplaceVoids(srcRow[index], cachedRows[index][i], srcRow[index].length);
-                                blurRow(cachedRows[index][i], tmpRow[index], cachedRows[index][i].length);
+                            blurRow(srcRow, tmpRow, srcRow.length);
+                            if (firstPass[0] && !isFinite(tmpRow[srcCols - 1])){
+                                foundVoid[i] = true;
+                                copyAndReplaceVoids(srcRow, cachedRows[j], srcRow.length);
+                                blurRow(cachedRows[j], tmpRow, cachedRows[j].length);
 
                             }
+
+                            blurRow(tmpRow, cachedRows[j], tmpRow.length);
+                            blurRow(cachedRows[j], tmpRow, cachedRows[j].length);
+                            blurRow(tmpRow, cachedRows[j], tmpRow.length);
+
                         }
-                        blurRow(tmpRow[index], cachedRows[index][i], tmpRow[index].length);
-                        blurRow(cachedRows[index][i], tmpRow[index], cachedRows[index][i].length);
-                        blurRow(tmpRow[index], cachedRows[index][i], tmpRow[index].length);
+
+
+                    }
+                    for (int col = 0 ; col < srcCols; col++){
+                        for (int k = 0; k < NBR_CACHED_ROWS; k ++){
+                            if (i*NBR_CACHED_ROWS + k < srcRows){
+                                float[] r = cachedRows[i];
+                                destBuffer[getDirectIndex(i*NBR_CACHED_ROWS + k, col)] = r[col];
+                            }
+                        }
                     }
                 }
-
-                for (int col = 0; col < srcCols; col ++){
-                    for (int i = 0 ; i < NBR_CACHED_ROWS; i ++ ){
-                        if (start + i < srcRows){
-                            float[] r = cachedRows[index][i];
-                            destBuffer[getDirectIndex(start+i, col)]= r[col];
-                        }
-                    }
-                }
-
             }
 
             public int getRow(int directIndex){
@@ -212,21 +207,14 @@ public class HorizontalTransposingLowPassFilter implements AparapiOperator {
         };
         kernel.execute(1);
 //        kernel.execute(Range.create(srcRows/NBR_CACHED_ROWS));
-        kernel.execute(Range.create(size));
+        kernel.execute(Range.create(srcRows/NBR_CACHED_ROWS + srcRows%NBR_CACHED_ROWS));
         kernel.dispose();
 
-//        System.out.println(srcRows + "  " +NBR_CACHED_ROWS + "::" +srcRows/NBR_CACHED_ROWS + "-->"  );
-////        for (float i : destBuffer)
-////            System.out.println(">> " + i);
-//
-//        for (int i = 0 ; i < size; i++){
-//            for (int j = 0 ; j <srcCols; j ++){
-//                System.out.println( "i " + i + " j " + j +"-->"  + srcRow[i][j]);
-//            }
-//        }
+//        System.out.println(srcRows + "  " +NBR_CACHED_ROWS + "::" +srcRows/NBR_CACHED_ROWS + "-->"  + (tester[0]));
+//        for (float i : destBuffer)
+//            System.out.println(">> " + i);
 
-
-            dest.setBufferReceived(destBuffer);
+        dest.setBufferReceived(destBuffer);
 
 
         return this.dest;
