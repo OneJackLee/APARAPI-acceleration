@@ -28,9 +28,7 @@ public class MaskFilter {
 
         dest = new GradientOperator().operate(src);
 
-
-//        dest = new DemoLowPassOperator(sigmaBlur).operate(dest);
-
+        dest = new DemoLowPassOperator(sigmaBlur).operate(dest);
 
         dest = new DemoClampToRangeOperator(gainSlopeThreshold, slopeThreshold).operate(dest);
 

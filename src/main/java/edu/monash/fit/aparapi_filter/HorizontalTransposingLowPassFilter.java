@@ -64,6 +64,7 @@ public class HorizontalTransposingLowPassFilter implements AparapiOperator {
 
         boolean[] foundVoid = new boolean[size];
         Arrays.fill(foundVoid, false);
+        int[] tester = {0};
 
         Kernel kernel = new Kernel(){
             @Override
@@ -92,6 +93,9 @@ public class HorizontalTransposingLowPassFilter implements AparapiOperator {
                         blurRow(tmpRow[index], cachedRows[index][i], tmpRow[index].length);
                         blurRow(cachedRows[index][i], tmpRow[index], cachedRows[index][i].length);
                         blurRow(tmpRow[index], cachedRows[index][i], tmpRow[index].length);
+                    }
+                    else{
+                        tester[0] ++;
                     }
                 }
 
@@ -225,8 +229,7 @@ public class HorizontalTransposingLowPassFilter implements AparapiOperator {
 //            }
 //        }
 
-
-            dest.setBufferReceived(destBuffer);
+        dest.setBufferReceived(destBuffer);
 
 
         return this.dest;
