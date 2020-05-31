@@ -5,36 +5,46 @@ import edu.monash.fit.aparapi_filter.operator.MaskFilter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * The original main class of the aparapi project
+ * it will read in the stream input and store it into a Grid object, process and
+ * output the post-process grid values through stream output
+ */
 public class Main {
 
+    /**
+     * The main execution method
+     * @param args argument list
+     */
     public static void main(String[] args) {
-
-//        if (args.length < 5) {
-//            System.out.println("END");
-//            System.exit(-1);
-//        }
-
+        // guardian code
         if (args.length < 7) {
             System.out.println("END");
             System.exit(-1);
         }
 
 
-        int cols = Integer.parseInt(args[0]);
-        int rows = Integer.parseInt(args[1]);
-        double cellsize = Double.parseDouble(args[2]);
-        double north = Double.parseDouble(args[3]);
-        double south = Double.parseDouble(args[4]);
+        /**
+         * retrieve values from argument list
+         */
+        int cols = Integer.parseInt(args[0]);   // get cols
+        int rows = Integer.parseInt(args[1]);   // get rows
+        double cellsize = Double.parseDouble(args[2]);  // get cellsize
+        double north = Double.parseDouble(args[3]);     // get north
+        double south = Double.parseDouble(args[4]);     // get south
 
-        double east = Double.parseDouble(args[5]);
-        double west = Double.parseDouble(args[6]);
+        double east = Double.parseDouble(args[5]);      // get east
+        double west = Double.parseDouble(args[6]);      // get west
 
-        int n = cols * rows;
+        int n = cols * rows;                        // size of buffer
 
-        float[] buffer = new float[n];
+        float[] buffer = new float[n];              // create buffer to store value
         Grid source, output;
 
         try {
+            /*
+            read from stream input, convert byte into float and store it into buffer
+             */
             for (int i = 0; i < n; i++) {
                 // read four bytes
                 int b1 = System.in.read();
@@ -52,12 +62,16 @@ public class Main {
                 buffer[i] = Float.intBitsToFloat(intBits);
             }
 
+            /*
+            create grid object, execute mask filter procedure, and get the buffer array
+             */
             source = new Grid(buffer, cols, rows, cellsize, north, south, east, west);
-            output = new Grid(cols, rows, cellsize, north, south, east, west);
             output = new MaskFilter(source).execute();
             buffer = output.getBuffer();
-//            buffer = source.getBuffer();
+
+            // generate the performance report
             try{
+                // file writer
                 FileWriter myWriter = new FileWriter("performance.txt");
                 for (String line : MaskFilter.benchmarking)
                     myWriter.write(line + "\n");
@@ -67,8 +81,9 @@ public class Main {
                 e.printStackTrace();
             }
 
-
-
+            /*
+            convert float to byte, and stream out the byte value
+             */
             for (int i = 0; i < n; i++) {
                 int intBits = Float.floatToIntBits(buffer[i]);
                 int b4 = (intBits >>> 24) & 0xFF;
