@@ -3,7 +3,6 @@ package edu.monash.fit.aparapi_filter.operator;
 import com.aparapi.Kernel;
 import com.aparapi.Range;
 import edu.monash.fit.aparapi_filter.Grid;
-import edu.monash.fit.aparapi_filter.MaskFilter;
 
 public class LowPassOperator implements AparapiOperator {
     private final float FLOAT_MAX = Float.MAX_VALUE, FLOAT_VOID = Float.NaN;

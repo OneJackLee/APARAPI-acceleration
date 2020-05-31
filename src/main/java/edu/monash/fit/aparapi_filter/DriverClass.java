@@ -1,6 +1,7 @@
 package edu.monash.fit.aparapi_filter;
 
 import com.aparapi.device.Device;
+import edu.monash.fit.aparapi_filter.operator.MaskFilter;
 
 import java.io.FileWriter;
 import java.io.IOException;

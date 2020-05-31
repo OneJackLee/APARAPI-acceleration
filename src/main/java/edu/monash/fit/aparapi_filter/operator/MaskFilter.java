@@ -1,11 +1,8 @@
-package edu.monash.fit.aparapi_filter;
+package edu.monash.fit.aparapi_filter.operator;
 
 import com.aparapi.Kernel;
 import com.aparapi.Range;
-import edu.monash.fit.aparapi_filter.operator.AparapiOperator;
-import edu.monash.fit.aparapi_filter.operator.ClampToRangeOperator;
-import edu.monash.fit.aparapi_filter.operator.GradientOperator;
-import edu.monash.fit.aparapi_filter.operator.LowPassOperator;
+import edu.monash.fit.aparapi_filter.Grid;
 
 import java.util.ArrayList;
 
