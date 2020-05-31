@@ -26,14 +26,14 @@ public class Grid {
      */
     public Grid(float[] bufferReceived, int cols, int rows, double cellSize,
                 double north, double south, double east, double west){
-        this.bufferReceived = bufferReceived;
-        this.cols = cols;
-        this.rows = rows;
-        this.cellSize = cellSize;
-        this.north = north;
-        this.south = south;
-        this.east = east;
-        this.west = west;
+        setBufferReceived(bufferReceived);
+        setCols(cols);
+        setRows(rows);
+        setCellSize(cellSize);
+        setNorth(north);
+        setSouth(south);
+        setEast(east);
+        setWest(west);
     }
 
     /**
@@ -47,14 +47,15 @@ public class Grid {
      * @param west west longitude
      */
     public Grid(int cols, int rows, double cellSize, double north, double south, double east, double west){
-        this.cols = cols;
-        this.rows = rows;
-        this.cellSize = cellSize;
-        this.north = north;
-        this.south = south;
-        this.east = east;
-        this.west = west;
-        this.bufferReceived = new float[this.cols * this.rows];
+        this(new float[cols * rows], cols, rows, cellSize, north, south, east, west);
+//        this.cols = cols;
+//        this.rows = rows;
+//        this.cellSize = cellSize;
+//        this.north = north;
+//        this.south = south;
+//        this.east = east;
+//        this.west = west;
+//        this.bufferReceived = new float[this.cols * this.rows];
     }
 
     /**
@@ -102,6 +103,9 @@ public class Grid {
      * @param bufferReceived float array
      */
     public void setBufferReceived(float[] bufferReceived){
+        if (bufferReceived == null){
+            throw new NullPointerException();
+        }
         this.bufferReceived = bufferReceived;
     }
 
@@ -120,6 +124,9 @@ public class Grid {
      * @return grid value from the array
      */
     public float get(int col, int row) {
+        if (col < 0 || row < 0){
+            throw new IllegalArgumentException();
+        }
         return bufferReceived[col + row * cols];
     }
 
@@ -130,6 +137,9 @@ public class Grid {
      * @param row row representation
      */
     public void set(float value, int col, int row) {
+        if (col < 0 || row < 0){
+            throw new IllegalArgumentException();
+        }
         bufferReceived[col + row * cols] = value;
     }
 
@@ -139,6 +149,9 @@ public class Grid {
      * @return value from the array
      */
     public float get(int directIndex){
+        if (directIndex < 0){
+            throw new IllegalArgumentException();
+        }
         return bufferReceived[directIndex];
     }
 
@@ -148,6 +161,9 @@ public class Grid {
      * @param directIndex the direct index representation
      */
     public void set(float value, int directIndex){
+        if (directIndex < 0){
+            throw new IllegalArgumentException();
+        }
         bufferReceived[directIndex] = value;
     }
 
@@ -157,6 +173,9 @@ public class Grid {
      * @return row representation
      */
     public int getRow(int directIndex){
+        if (directIndex < 0){
+            throw new IllegalArgumentException();
+        }
         return directIndex / getCols();
     }
 
@@ -166,6 +185,9 @@ public class Grid {
      * @return column representation
      */
     public int getCol(int directIndex){
+        if (directIndex < 0){
+            throw new IllegalArgumentException();
+        }
         return directIndex % getCols();
     }
 
@@ -176,6 +198,10 @@ public class Grid {
      * @return directIndex the direct index representation
      */
     public int getDirectIndex(int col, int row){
+        if (col < 0 || row < 0){
+            throw new IllegalArgumentException();
+        }
+
         return col + row * cols;
     }
 
@@ -191,7 +217,11 @@ public class Grid {
      * setter of the total rows in the array
      * @param rows total rows
      */
-    public void setRows(int rows) {
+    private void setRows(int rows) {
+        if (rows < 0){
+            throw new IllegalArgumentException();
+        }
+
         this.rows = rows;
     }
 
@@ -207,7 +237,11 @@ public class Grid {
      * setter of the total columns in the array
      * @param cols total columns
      */
-    public void setCols(int cols) {
+    private void setCols(int cols) {
+        if (cols < 0){
+            throw new IllegalArgumentException();
+        }
+
         this.cols = cols;
     }
 
@@ -223,7 +257,11 @@ public class Grid {
      * setter of the cellsize
      * @param cellSize size of each cell
      */
-    public void setCellSize(double cellSize) {
+    private void setCellSize(double cellSize) {
+        if (cellSize < 0){
+            throw new IllegalArgumentException();
+        }
+
         this.cellSize = cellSize;
     }
 
@@ -239,7 +277,7 @@ public class Grid {
      * set south latitude
      * @param south latitude
      */
-    public void setSouth(double south) {
+    private void setSouth(double south) {
         this.south = south;
     }
 
@@ -255,7 +293,7 @@ public class Grid {
      * set north latitude
      * @param north latitude
      */
-    public void setNorth(double north) {
+    private void setNorth(double north) {
         this.north = north;
     }
 
@@ -271,7 +309,7 @@ public class Grid {
      * set east longitude
      * @param east longitude
      */
-    public void setEast(double east) {
+    private void setEast(double east) {
         this.east = east;
     }
 
@@ -287,7 +325,7 @@ public class Grid {
      * set west longitude
      * @param west longitude
      */
-    public void setWest(double west) {
+    private void setWest(double west) {
         this.west = west;
     }
 

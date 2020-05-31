@@ -31,6 +31,9 @@ public class LowPassOperator implements AparapiOperator {
     public Grid operate(Grid src) {
         Grid postProcessingGrid;
         this.src = src;
+        if (src == null){
+            throw new NullPointerException("");
+        }
 
         MaskFilter.benchmarking.add("Low-pass:");
 

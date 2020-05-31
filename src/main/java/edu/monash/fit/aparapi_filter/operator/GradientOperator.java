@@ -22,6 +22,9 @@ public class GradientOperator implements AparapiOperator {
 
     @Override
     public Grid operate(Grid src) {
+        if (src == null){
+            throw new NullPointerException("");
+        }
         /*
          APARAPI unable to access the class attributes directly thus has to "copy" the references again
          */

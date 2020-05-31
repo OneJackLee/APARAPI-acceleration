@@ -35,6 +35,10 @@ public class MaskFilter {
      * @param src source grid
      */
     public MaskFilter(Grid src){
+        if (src == null){
+            throw new NullPointerException("");
+        }
+
         this.src = src;
         this.dest = Grid.shallowCopy(src);              // shallow copy of src
     }

@@ -24,13 +24,16 @@ public class ClampToRangeOperator implements AparapiOperator {
         this.minI = min;
         this.maxI = max;
         if (maxI < minI){
-            throw new IllegalArgumentException("The max value is greater than min value");
+            throw new IllegalStateException("The max value is greater than min value");
         }
     }
 
     @Override
     public Grid operate(Grid src) {
         this.src = src;
+        if (src == null){
+            throw new NullPointerException("");
+        }
         this.dest = Grid.shallowCopy(src);      // create the Grid holder with the attributes of src Grid
 
         /*

@@ -46,6 +46,10 @@ public class HorizontalTransposingLowPassFilter implements AparapiOperator {
 
     @Override
     public Grid operate(Grid src) {
+        if (src == null){
+            throw new NullPointerException("");
+        }
+
         int r = calculateR(this.sigmaI);                // r value
         double alpha = calculateAlpha(this.sigmaI, r);  // alpha value
         float c1 = calculateC1(this.sigmaI, r, alpha);

@@ -220,7 +220,7 @@ public class Main {
         return filteredGrid;
     }
 
-    private static Grid maskFilter(Grid grid) {
+    public static Grid maskFilter(Grid grid) {
 
         // Pixels with a slope equal or smaller than localScaleSlopeDeg are set to 
         // a mask value of 0 (before blurring, smoothing, and gain are applied). 
