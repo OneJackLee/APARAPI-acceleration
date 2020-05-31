@@ -3,7 +3,6 @@ package edu.monash.fit.aparapi_filter.operator;
 import com.aparapi.Kernel;
 import com.aparapi.Range;
 import edu.monash.fit.aparapi_filter.Grid;
-import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
 
 /**
  * clamp slope values to range between min and max
@@ -25,7 +24,7 @@ public class ClampToRangeOperator implements AparapiOperator {
         this.minI = min;
         this.maxI = max;
         if (maxI < minI){
-            throw new ValueException("The max value is greater than min value");
+            throw new IllegalArgumentException("The max value is greater than min value");
         }
     }
 
