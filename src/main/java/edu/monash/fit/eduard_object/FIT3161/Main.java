@@ -26,7 +26,7 @@ public class Main {
 
     // path to input grid file in Esri ASCII grid file format
 //    private static String inputFilePath = null;
-    private static String inputFilePath = "C:\\Users\\charl\\Desktop\\git\\Eduard\\map\\Colorado scale series\\Colorado scale series\\Gore_Range_Albers_5m\\Gore_Range_Albers_5m.asc"; // "/Users/jennyb/Documents/Java/FIT3161Eduard/data/Gore_Range_Albers_5m.asc";
+    private static String inputFilePath = null; // "/Users/jennyb/Documents/Java/FIT3161Eduard/data/Gore_Range_Albers_5m.asc";
 
     // path to store filtered grid
     private static String outputFilePath = null;
