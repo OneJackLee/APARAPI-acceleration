@@ -141,7 +141,6 @@ public class MainLauncher {
 
     /**
      * generate the benchmark file
-     * @throws IOException file not found
      */
     private static void create_benchmark() {
         performanceString += "APARAPI performance benchmark\n";
