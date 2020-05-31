@@ -10,6 +10,8 @@ public class HorizontalTransposingLowPassFilter implements AparapiOperator {
     private final double sigmaI;
     Grid src;
     Grid dest;
+    double timer;
+
     boolean firstPassI;
     private static final int NBR_CACHED_ROWS = 4;
 
@@ -22,10 +24,6 @@ public class HorizontalTransposingLowPassFilter implements AparapiOperator {
     public HorizontalTransposingLowPassFilter(boolean firstPass, double sigma){
         firstPassI = firstPass;
         this.sigmaI = sigma;
-    }
-    @Override
-    public Grid operate(Grid src, Grid dest) {
-        return null;
     }
 
     @Override
@@ -214,20 +212,26 @@ public class HorizontalTransposingLowPassFilter implements AparapiOperator {
 
 
         };
+        kernel.setExplicit(true);
+        kernel.put(srcBuffer);
+        kernel.put(destBuffer);
+
+        kernel.put(firstPass);
+        kernel.put(foundVoid);
+        kernel.put(cachedRows);
+        kernel.put(srcRow);
+        kernel.put(tmpRow);
+
+
         kernel.execute(1);
-//        kernel.execute(Range.create(srcRows/NBR_CACHED_ROWS));
+        timer = System.nanoTime();
         kernel.execute(Range.create(size));
+        timer = System.nanoTime() - timer;
+        timer = timer/ 1000000;
+
+        kernel.get(destBuffer);
         kernel.dispose();
 
-//        System.out.println(srcRows + "  " +NBR_CACHED_ROWS + "::" +srcRows/NBR_CACHED_ROWS + "-->"  );
-////        for (float i : destBuffer)
-////            System.out.println(">> " + i);
-//
-//        for (int i = 0 ; i < size; i++){
-//            for (int j = 0 ; j <srcCols; j ++){
-//                System.out.println( "i " + i + " j " + j +"-->"  + srcRow[i][j]);
-//            }
-//        }
 
         dest.setBufferReceived(destBuffer);
 
@@ -251,5 +255,10 @@ public class HorizontalTransposingLowPassFilter implements AparapiOperator {
         return (2 * r + 1) * (r * (r + 1) - 3.0 * sigma * sigma / ITERATIONS)
                 / (6.0 * (sigma * sigma / ITERATIONS - (r + 1) * (r + 1)));
     }
+
+    public double getTimer(){
+        return timer;
+    }
+
 
 }

@@ -3,17 +3,14 @@ package edu.monash.fit.aparapi_filter.operator;
 import com.aparapi.Kernel;
 import com.aparapi.Range;
 import edu.monash.fit.aparapi_filter.Grid;
+import edu.monash.fit.aparapi_filter.MaskFilter;
 
 public class GradientOperator implements AparapiOperator {
     Grid src;
     Grid dest;
+    double timer;
 
     public GradientOperator(){
-    }
-
-    @Override
-    public Grid operate(Grid src, Grid dest) {
-        return null;
     }
 
     public Grid operate(Grid src) {
@@ -90,12 +87,20 @@ public class GradientOperator implements AparapiOperator {
 
 //        System.out.println(kernel.getTargetDevice());
         kernel.execute(1);
-
+        timer = System.nanoTime();
         kernel.execute(Range.create(src.getLength()));
+        timer = (System.nanoTime() - timer) / 1000000;
+
+        MaskFilter.benchmarking.add("Gradient [rise/run]:  " + timer + " ms");
+
         kernel.get(destBuffer);
         kernel.dispose();
         dest.setBufferReceived(destBuffer);
         return dest;
+    }
+
+    public double getTimer(){
+        return timer;
     }
 
 }

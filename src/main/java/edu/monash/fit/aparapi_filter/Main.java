@@ -1,7 +1,8 @@
 package edu.monash.fit.aparapi_filter;
 
-import com.aparapi.*;
+import java.io.FileWriter;
 import java.io.IOException;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -54,6 +55,16 @@ public class Main {
             output = new MaskFilter(source, output).execute();
             buffer = output.getBuffer();
 //            buffer = source.getBuffer();
+            try{
+                FileWriter myWriter = new FileWriter("performance.txt");
+                for (String line : MaskFilter.benchmarking)
+                    myWriter.write(line + "\n");
+                myWriter.close();
+
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+
 
 
             for (int i = 0; i < n; i++) {

@@ -3,11 +3,11 @@ package edu.monash.fit.aparapi_filter.operator;
 import com.aparapi.Kernel;
 import com.aparapi.Range;
 import edu.monash.fit.aparapi_filter.Grid;
+import edu.monash.fit.aparapi_filter.MaskFilter;
 
 public class LowPassOperator implements AparapiOperator {
     private final float FLOAT_MAX = Float.MAX_VALUE, FLOAT_VOID = Float.NaN;
-
-
+    double timer, transposingTimer;
     Grid src;
     Grid dest;
     float sigmaValue;
@@ -18,16 +18,22 @@ public class LowPassOperator implements AparapiOperator {
     }
 
     @Override
-    public Grid operate(Grid src, Grid dest) {
-        return null;
-    }
-
-    @Override
     public Grid operate(Grid src) {
         Grid postProcessingGrid;
         this.src = src;
-        Grid transposedGrid = new HorizontalTransposingLowPassFilter(true, this.sigmaValue).operate(this.src);
-        postProcessingGrid = new HorizontalTransposingLowPassFilter(false, this.sigmaValue).operate(transposedGrid);
+
+        MaskFilter.benchmarking.add("Low-pass:");
+
+        AparapiOperator horizontalTransposingFirstPass = new HorizontalTransposingLowPassFilter(true, this.sigmaValue);
+        Grid transposedGrid = horizontalTransposingFirstPass.operate(this.src);
+        MaskFilter.benchmarking.add("\tHorizontal transposing 1D low-pass filter:  " + horizontalTransposingFirstPass.getTimer() + " ms");
+
+        AparapiOperator horizontalTransposingSecondPass = new HorizontalTransposingLowPassFilter(false, this.sigmaValue);
+        postProcessingGrid = horizontalTransposingSecondPass.operate(transposedGrid);
+        MaskFilter.benchmarking.add("\tHorizontal transposing 1D low-pass filter:  " + horizontalTransposingSecondPass.getTimer() + " ms");
+
+        MaskFilter.benchmarking.add(" " + ((horizontalTransposingFirstPass.getTimer() + horizontalTransposingSecondPass.getTimer()))+ " ms");
+
 //        postProcessingGrid = transposedGrid;
 
         float[] srcBuffer = src.getBuffer();
@@ -47,11 +53,28 @@ public class LowPassOperator implements AparapiOperator {
             }
         };
 
+
+        kernel.setExplicit(true); /////
+        kernel.put(srcBuffer);
+        kernel.put(destBuffer);
+
         kernel.execute(1);
+
+        timer = System.nanoTime();
         kernel.execute(Range.create(src.getCols() * src.getRows()));
+        timer = System.nanoTime() - timer;
+        timer = timer/ 1000000;
+        MaskFilter.benchmarking.add("Copy void:  " + timer + " ms");
+
+        kernel.get(destBuffer);
         kernel.dispose();
         postProcessingGrid.setBufferReceived(destBuffer);
 
         return postProcessingGrid;
     }
+
+    public double getTimer(){
+        return timer;
+    }
+
 }
