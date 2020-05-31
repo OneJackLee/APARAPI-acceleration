@@ -1,13 +1,13 @@
-Gradient [rise/run]:  1.3339 ms
+Gradient [rise/run]:  1.2573 ms
 Low-pass:
-	Horizontal transposing 1D low-pass filter:  44.155 ms
-	Horizontal transposing 1D low-pass filter:  39.9694 ms
- 84.12440000000001 ms
-Copy void:  0.3428 ms
-Clamp to range:  0.391 ms
+	Horizontal transposing 1D low-pass filter:  39.9008 ms
+	Horizontal transposing 1D low-pass filter:  40.588 ms
+ 80.4888 ms
+Copy void:  0.338 ms
+Clamp to range:  0.3988 ms
 Low-pass:
-	Horizontal transposing 1D low-pass filter:  39.0066 ms
-	Horizontal transposing 1D low-pass filter:  39.474 ms
- 78.4806 ms
-Copy void:  0.4089 ms
-Slope to normalized mask:  0.4379 ms
+	Horizontal transposing 1D low-pass filter:  40.5077 ms
+	Horizontal transposing 1D low-pass filter:  46.0982 ms
+ 86.60589999999999 ms
+Copy void:  0.3502 ms
+Slope to normalized mask:  0.4344 ms

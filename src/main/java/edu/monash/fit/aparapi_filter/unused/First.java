@@ -1,4 +1,4 @@
-package edu.monash.fit.unused;
+package edu.monash.fit.aparapi_filter.unused;
 
 import com.aparapi.Kernel;
 import com.aparapi.Range;

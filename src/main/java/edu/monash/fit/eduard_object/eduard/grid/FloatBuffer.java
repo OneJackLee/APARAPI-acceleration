@@ -89,4 +89,8 @@ public final class FloatBuffer implements GridBuffer {
         return "FloatBuffer: columns=" + cols + ", rows=" + rows;
     }
 
+    public float[] getBuffer(){
+        return buffer;
+    }
+
 }

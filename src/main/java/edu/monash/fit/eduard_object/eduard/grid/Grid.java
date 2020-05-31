@@ -1029,4 +1029,12 @@ public final class Grid {
         return prjFileContent;
     }
 
+    /**
+     * get the buffer array
+     * @return get buffer array
+     */
+    public float[] getBufferArray(){
+        return grid.getBuffer();
+    }
+
 }

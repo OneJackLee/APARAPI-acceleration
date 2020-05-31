@@ -81,5 +81,11 @@ public interface GridBuffer {
      * @param row The horizontal row for which a value is voided.
      */
     void setVoid(int col, int row);
+
+    /**
+     * get the buffer array
+     * @return the buffer array
+     */
+    float[] getBuffer();
     
 }

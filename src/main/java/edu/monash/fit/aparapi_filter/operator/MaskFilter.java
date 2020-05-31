@@ -18,9 +18,9 @@ public class MaskFilter {
     double startTime;
 
 
-    public MaskFilter(Grid src, Grid dest){
+    public MaskFilter(Grid src){
         this.src = src;
-        this.dest = dest;
+        this.dest = Grid.shallowCopy(src);
     }
 
     public Grid execute(){

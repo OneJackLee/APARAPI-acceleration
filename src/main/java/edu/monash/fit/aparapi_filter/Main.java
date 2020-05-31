@@ -54,7 +54,7 @@ public class Main {
 
             source = new Grid(buffer, cols, rows, cellsize, north, south, east, west);
             output = new Grid(cols, rows, cellsize, north, south, east, west);
-            output = new MaskFilter(source, output).execute();
+            output = new MaskFilter(source).execute();
             buffer = output.getBuffer();
 //            buffer = source.getBuffer();
             try{
