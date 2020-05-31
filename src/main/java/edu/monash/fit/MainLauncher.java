@@ -42,9 +42,8 @@ public class MainLauncher {
                     inputGridFile = FileUtils.askFile(null, "Import Grid", true);
                 }
                 if (inputGridFile == null) {
-                    JOptionPane.showMessageDialog(null, "The operation has been cancelled."
-                            );
-                    return;
+                    JOptionPane.showMessageDialog(null, "The operation has been cancelled. Software ended.");
+                    System.exit(0);
                 }
                 if (inputGridFile != null){
                     fileName = FileUtils.getFileNameWithoutExtension(inputGridFile);

@@ -1,15 +1,27 @@
 # APARAPI-acceleration
 
-Eduard is a cross-platform-supported software designed to generate shaded relief images. 
-Aparapi is a JAVA API which can perform General-purpose computing on Graphics Processing Units (GPGPU). 
+Eduard is a cross-platform-supported software designed to generate shaded relief images. \
+Aparapi is a JAVA API which can perform General-purpose computing on Graphics Processing Units (GPGPU). \
 The project is intended to use APARAPI to accelerate the processes of generating the raster filter
 
-to be continue
 
 ### Eduard
+The original software which produce the shaded relief images. It used Java thread algorithm.
 
 ### APARAPI
+The technology which used to accelerate the process.
 
 ## Build project
-
-## Running 
+To compile the executable JAR file, 
+1. open the command prompt or terminal
+2. navigate to the `APARAPI-acceleration` parent folder
+3. execute the command `mvn package`
+## Execute software
+The executable JAR file will be located at `target` folder.\
+Double click the JAR `APARAPI-acceleration-1.0-SNAPSHOT-jar-with-dependencies.jar` to execute the software.
+#### _**Running**_
+1. A pop out window will shown up to prompt the input raster file `*.asc`.
+2. It will process the raster file and generate the raster file
+3. A pop out window will shown up to prompt the output location of the filtered raster file `*.asc`.
+4. A pop out window will shown up to prompt the output location of the filtered image file `*.png`.
+5. A pop out window will shown up to prompt the output location of the performance benchmark file `*.txt`.
