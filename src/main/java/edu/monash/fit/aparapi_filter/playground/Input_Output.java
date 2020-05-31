@@ -1,9 +1,8 @@
-package edu.monash.fit.unused;
+package edu.monash.fit.aparapi_filter.playground;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.Scanner;
 
 // ask user to input file name or use JFileChooser (take from Oracle)

@@ -1,4 +1,4 @@
-package edu.monash.fit.unused;
+package edu.monash.fit.aparapi_filter.playground;
 
 import java.util.Random;
 

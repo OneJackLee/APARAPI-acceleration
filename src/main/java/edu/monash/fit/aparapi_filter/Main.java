@@ -1,5 +1,7 @@
 package edu.monash.fit.aparapi_filter;
 
+import edu.monash.fit.aparapi_filter.operator.MaskFilter;
+
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -52,7 +54,7 @@ public class Main {
 
             source = new Grid(buffer, cols, rows, cellsize, north, south, east, west);
             output = new Grid(cols, rows, cellsize, north, south, east, west);
-            output = new MaskFilter(source, output).execute();
+            output = new MaskFilter(source).execute();
             buffer = output.getBuffer();
 //            buffer = source.getBuffer();
             try{

@@ -1,6 +1,7 @@
 package edu.monash.fit.aparapi_filter;
 
 import com.aparapi.device.Device;
+import edu.monash.fit.aparapi_filter.operator.MaskFilter;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class DriverClass {
 //        for (float i: input.getBuffer())
 //            System.out.println(i);
 
-        output = new MaskFilter(input, output).execute();
+        output = new MaskFilter(input).execute();
 
         System.out.println(output.getBuffer());
 

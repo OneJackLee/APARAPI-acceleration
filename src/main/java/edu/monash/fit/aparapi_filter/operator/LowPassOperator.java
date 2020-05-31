@@ -3,18 +3,28 @@ package edu.monash.fit.aparapi_filter.operator;
 import com.aparapi.Kernel;
 import com.aparapi.Range;
 import edu.monash.fit.aparapi_filter.Grid;
-import edu.monash.fit.aparapi_filter.MaskFilter;
 
+/**
+ * Low-pass filter which applies Gaussian blur
+ * {@link HorizontalTransposingLowPassFilter}.
+ *
+ * [REFERENCE: Eduard LowPassOperator class]
+ */
 public class LowPassOperator implements AparapiOperator {
-    private final float FLOAT_MAX = Float.MAX_VALUE, FLOAT_VOID = Float.NaN;
-    double timer, transposingTimer;
-    Grid src;
-    Grid dest;
-    float sigmaValue;
+    private final float FLOAT_MAX = Float.MAX_VALUE, FLOAT_VOID = Float.NaN;    // FLOAT library attribute
+    double timer;
+    Grid src;           // the source grid
+    float sigmaValue;   // sigma value holder
 
+    /**
+     * Constructor
+     * @param sigma standard deviation
+     */
     public LowPassOperator(float sigma){
         this.sigmaValue = sigma;
-
+        if (sigma < 0) {
+            throw new IllegalArgumentException("negative sigma");
+        }
     }
 
     @Override
@@ -24,6 +34,9 @@ public class LowPassOperator implements AparapiOperator {
 
         MaskFilter.benchmarking.add("Low-pass:");
 
+        /*
+        execute HorizontalTransposingLowPassFilter two times to blur the image
+         */
         AparapiOperator horizontalTransposingFirstPass = new HorizontalTransposingLowPassFilter(true, this.sigmaValue);
         Grid transposedGrid = horizontalTransposingFirstPass.operate(this.src);
         MaskFilter.benchmarking.add("\tHorizontal transposing 1D low-pass filter:  " + horizontalTransposingFirstPass.getTimer() + " ms");
@@ -34,11 +47,10 @@ public class LowPassOperator implements AparapiOperator {
 
         MaskFilter.benchmarking.add(" " + ((horizontalTransposingFirstPass.getTimer() + horizontalTransposingSecondPass.getTimer()))+ " ms");
 
-//        postProcessingGrid = transposedGrid;
-
         float[] srcBuffer = src.getBuffer();
         float[] destBuffer = postProcessingGrid.getBuffer();
 
+        // consistency ensure
         Kernel kernel = new Kernel(){
             @Override
             public void run() {
@@ -54,11 +66,11 @@ public class LowPassOperator implements AparapiOperator {
         };
 
 
-        kernel.setExplicit(true); /////
-        kernel.put(srcBuffer);
-        kernel.put(destBuffer);
+        kernel.setExplicit(true);           // explicitly manage transfers between GPU memory and CPU
+        kernel.put(srcBuffer);              // send srcBuffer to GPU
+        kernel.put(destBuffer);             // send destBuffer to GPU
 
-        kernel.execute(1);
+        kernel.execute(1);                  // generate a KernelRunner run instantly, to eagerly create it
 
         timer = System.nanoTime();
         kernel.execute(Range.create(src.getCols() * src.getRows()));
@@ -66,13 +78,14 @@ public class LowPassOperator implements AparapiOperator {
         timer = timer/ 1000000;
         MaskFilter.benchmarking.add("Copy void:  " + timer + " ms");
 
-        kernel.get(destBuffer);
-        kernel.dispose();
+        kernel.get(destBuffer);             // fetch destBuffer from GPU
+        kernel.dispose();                   // clean kernel when finish job
         postProcessingGrid.setBufferReceived(destBuffer);
 
         return postProcessingGrid;
     }
 
+    @Override
     public double getTimer(){
         return timer;
     }
