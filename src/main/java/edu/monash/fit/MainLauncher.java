@@ -34,6 +34,8 @@ public class MainLauncher {
     // path to output benchmark file. Set to null to show a GUI dialog to select the file
     private static String benchmarkingFile = null;
 
+    private static String performanceString = "";
+
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(() -> {
             try{
@@ -75,7 +77,8 @@ public class MainLauncher {
 
                 export_grid(outputGrid);    //export grid
                 export_image(image);        //export image
-                create_benchmark();         //create the benchmark file
+                create_benchmark();         // generate benchmark
+                export_benchmark();         //create the benchmark file
             }
             catch (Throwable ex){
                 JOptionPane.showMessageDialog(null, ex);
@@ -83,7 +86,7 @@ public class MainLauncher {
                 System.exit(-1);
             }
             finally {
-                JOptionPane.showMessageDialog(null, "Operation done.");
+                JOptionPane.showMessageDialog(null, "Execution done\n" + performanceString);
                 System.exit(0);
             }
         });
@@ -125,22 +128,27 @@ public class MainLauncher {
      * export the benchmark file
      * @throws IOException file not found
      */
-    private static void create_benchmark() throws IOException {
+    private static void export_benchmark() throws IOException {
         if (benchmarkingFile == null){
             benchmarkingFile = FileUtils.askFile(null, "Export Benchmark", fileName + "_aparapi.txt", false, "txt", null);
         }
         if (benchmarkingFile != null){
             FileWriter myWriter = new FileWriter(benchmarkingFile);
-            System.out.println("APARAPI performance benchmark");
-            myWriter.write("APARAPI performance benchmark\n");
-            for (String line : MaskFilter.benchmarking){
-                System.out.println(line);
-                myWriter.write(line + "\n");
-
-            }
+            myWriter.write(performanceString);
             myWriter.close();
         }
     }
 
+    /**
+     * generate the benchmark file
+     * @throws IOException file not found
+     */
+    private static void create_benchmark() {
+        performanceString += "APARAPI performance benchmark\n";
+        for (String line : MaskFilter.benchmarking)
+            performanceString += line + "\n";
+    }
 
-}
+
+
+    }
