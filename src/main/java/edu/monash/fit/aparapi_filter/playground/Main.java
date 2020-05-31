@@ -1,4 +1,4 @@
-package edu.monash.fit.aparapi_filter.unused;
+package edu.monash.fit.aparapi_filter.playground;
 
 import java.io.FileNotFoundException;
 import java.util.Scanner;
