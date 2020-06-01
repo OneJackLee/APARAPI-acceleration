@@ -48,10 +48,6 @@ class MaskFilterTest {
     }
 
 
-    @Test
-    void execute() {
-    }
-
     private void generateInput(){
         aparapiSource = new Grid(1500, 1500, 0.5, 0.6, 0.8, 0.8, 0.8);
         aparapiSource.fillWithRandomFloat();

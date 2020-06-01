@@ -17,7 +17,7 @@ class ClampToRangeOperatorTest {
     float gainSlopeThreshold = (float) Math.tan(Math.toRadians(gainSlopeThresholdDeg));
 
     @Test
-    void createGradientOperatorObject(){
+    void createClampToRangeOperator(){
         clampToRangeOperator = new ClampToRangeOperator(1, 99);
     }
 
@@ -40,8 +40,7 @@ class ClampToRangeOperatorTest {
         }
     }
 
-
-    @org.junit.jupiter.api.Test
+    @Test
     void testOutputLength() {
         generateInput();
         generateOutput();

@@ -9,7 +9,7 @@ import static org.junit.Assert.fail;
 
 
 class HorizontalTransposingLowPassFilterTest {
-    float sigmaBlur = 6f, sigmaSmooth = 20f;
+    float sigmaBlur = 6f;
     HorizontalTransposingLowPassFilter horizontalTransposingFirstPass, horizontalTransposingSecondPass;
     Grid aparapiSource, aparapiSecond, aparapiResult;
     edu.monash.fit.eduard_object.eduard.grid.Grid eduardSource, eduardResult;
@@ -32,35 +32,26 @@ class HorizontalTransposingLowPassFilterTest {
     }
 
     @Test
-    void testOutputLengthSigmaBlur() {
-        generateInput();
-        generateOutputSigmaBlur();
-
-        assertEquals(aparapiResult.getBuffer().length, eduardResult.getBufferArray().length);
-    }
-
-    @Test
-    void testOutputCorrectnessSigmaBlur() {
-        generateInput();
-        generateOutputSigmaBlur();
-
-        for (int i=0; i <aparapiResult.getBuffer().length ; i++){
-            assertEquals(aparapiResult.get(i), eduardResult.getValue(i), 2);
+    void testInvalidSigmaValue() {
+        try {
+            horizontalTransposingFirstPass = new HorizontalTransposingLowPassFilter(true, -100);
+            fail();
+        } catch (IllegalArgumentException ex) {
         }
     }
 
     @Test
-    void testOutputLengthSigmaSmooth() {
+    void testOutputLength() {
         generateInput();
-        generateOutputSigmaSmooth();
+        generateOutputSigmaBlur();
 
         assertEquals(aparapiResult.getBuffer().length, eduardResult.getBufferArray().length);
     }
 
     @Test
-    void testOutputCorrectnessSigmaSmooth() {
+    void testOutputCorrectness() {
         generateInput();
-        generateOutputSigmaSmooth();
+        generateOutputSigmaBlur();
 
         for (int i=0; i <aparapiResult.getBuffer().length ; i++){
             assertEquals(aparapiResult.get(i), eduardResult.getValue(i), 2);
@@ -97,22 +88,5 @@ class HorizontalTransposingLowPassFilterTest {
 
     }
 
-    private void generateOutputSigmaSmooth() {
-        aparapiSecond = new HorizontalTransposingLowPassFilter(true, sigmaSmooth).operate(aparapiSource);
-        aparapiResult = new HorizontalTransposingLowPassFilter(false, sigmaSmooth).operate(aparapiSecond);
-
-        edu.monash.fit.eduard_object.eduard.grid.operator.AbstractFrequencyOperator afo;
-        // HorizontalTransposingLowPassFilter is a private class in AbstractFrequencyOperator class
-        // thus each HorizontalTransposingLowPassFilter instance is unable to test separately
-        afo = new edu.monash.fit.eduard_object.eduard.grid.operator.AbstractFrequencyOperator(sigmaSmooth, null) {
-            @Override
-            public String getName() {
-                return "";
-            }
-        };
-
-        eduardResult = afo.operate(eduardSource);
-
-    }
 
 }
