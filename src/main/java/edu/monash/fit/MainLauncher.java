@@ -9,6 +9,7 @@ import edu.monash.fit.eduard_object.eduard.utils.FileUtils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
@@ -41,7 +42,8 @@ public class MainLauncher {
             try{
                 // read input grid file
                 if (inputGridFile == null) {
-                    inputGridFile = FileUtils.askFile(null, "Import Grid", true);
+                    // inputGridFile = FileUtils.askFile(null, "Import Grid", true);
+                    inputGridFile = FileUtils.askFile(null, "Import Grid", null ,true, "asc",  new FileNameExtensionFilter("(*.asc) ascii file", "asc"));
                 }
                 if (inputGridFile == null) {
                     JOptionPane.showMessageDialog(null, "The operation has been cancelled. Software ended.");
@@ -99,7 +101,7 @@ public class MainLauncher {
      */
     private static void export_grid(edu.monash.fit.eduard_object.eduard.grid.Grid outputGrid) throws IOException {
         if (outputGridFile == null) {
-            outputGridFile = FileUtils.askFile(null, "Export Grid", fileName + "_filtered.asc",false, "asc", null);
+            outputGridFile = FileUtils.askFile(null, "Export Grid", fileName + "_filtered.asc",false, "asc",  new FileNameExtensionFilter("(*.asc) ascii file", "asc"));
         }
         if (outputGridFile != null) {
             EsriASCIIGridExporter.export(outputGrid, outputGridFile, null);
@@ -114,7 +116,7 @@ public class MainLauncher {
      */
     private static void export_image(BufferedImage image) throws IOException {
         if (outputImageFile == null){
-            outputImageFile = FileUtils.askFile(null, "Export Image", fileName + "_filtered.png", false, "png", null);
+            outputImageFile = FileUtils.askFile(null, "Export Image", fileName + "_filtered.png", false, "png", new FileNameExtensionFilter("(*.png) PNG file", "png"));
         }
         if (outputImageFile != null){
             File file = new File(outputImageFile);
@@ -130,7 +132,8 @@ public class MainLauncher {
      */
     private static void export_benchmark() throws IOException {
         if (benchmarkingFile == null){
-            benchmarkingFile = FileUtils.askFile(null, "Export Benchmark", fileName + "_aparapi.txt", false, "txt", null);
+            //null,true, null, new FileNameExtensionFilter("(*.txt) text file", "txt")
+            benchmarkingFile = FileUtils.askFile(null, "Export Benchmark", fileName + "_aparapi.txt", false, "txt", new FileNameExtensionFilter("(*.txt) text file", "txt"));
         }
         if (benchmarkingFile != null){
             FileWriter myWriter = new FileWriter(benchmarkingFile);
