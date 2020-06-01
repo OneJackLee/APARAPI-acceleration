@@ -46,7 +46,7 @@ public class MainLauncher {
                     inputGridFile = FileUtils.askFile(null, "Import Grid", null ,true, "asc",  new FileNameExtensionFilter("(*.asc) ascii file", "asc"));
                 }
                 if (inputGridFile == null) {
-                    JOptionPane.showMessageDialog(null, "The operation has been cancelled. Software ended.");
+                    JOptionPane.showMessageDialog(null, "The operation has been cancelled. Software ended.", "", JOptionPane.WARNING_MESSAGE);
                     System.exit(0);
                 }
                 if (inputGridFile != null){
@@ -83,12 +83,12 @@ public class MainLauncher {
                 export_benchmark();         //create the benchmark file
             }
             catch (Throwable ex){
-                JOptionPane.showMessageDialog(null, ex);
+                JOptionPane.showMessageDialog(null, ex, "Error", JOptionPane.ERROR_MESSAGE);
                 ex.printStackTrace();
                 System.exit(-1);
             }
             finally {
-                JOptionPane.showMessageDialog(null, "Execution done\n" + performanceString);
+                JOptionPane.showMessageDialog(null, performanceString,"Execution Done", JOptionPane.PLAIN_MESSAGE);
                 System.exit(0);
             }
         });
