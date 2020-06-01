@@ -63,24 +63,12 @@ class GridTest {
     }
 
     @Test
-    void setBufferReceivedEqual() {
+    void setGetBufferReceived() {
         grid = new Grid(1500, 1500, 0.5, 0.6, 0.8, 0.8, 0.8);
         float[] equal = new float[1500*1500];
         Arrays.fill(equal, 0f);
         grid.setBufferReceived(equal);
         assertEquals(grid.getBuffer(), equal);
-    }
-
-    @Test
-    void setBufferReceivedNotEqual() {
-        grid = new Grid(1500, 1500, 0.5, 0.6, 0.8, 0.8, 0.8);
-        float[] equal = new float[1500*1500];
-        Arrays.fill(equal, 0f);
-        grid.setBufferReceived(equal);
-        float[] notEqual = new float[1500*1500];
-        Arrays.fill(notEqual, 1f);
-
-        assertNotEquals(grid.getBuffer(), notEqual);
     }
 
 
@@ -94,14 +82,6 @@ class GridTest {
         }
     }
 
-
-    @Test
-    void getBuffer() {
-        grid = new Grid(1500, 1500, 0.5, 0.6, 0.8, 0.8, 0.8);
-        grid.fillWithZero();
-        for (float i: grid.getBuffer())
-            assertEquals(i,0, 1);
-    }
 
     @Test
     void testGet() {
